@@ -7,6 +7,7 @@ import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.actions.CloseAction;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -82,15 +83,16 @@ public abstract class AbstractTerminalRunner<T extends Process> {
 
   protected abstract ProcessHandler createProcessHandler(T process);
 
-  public JBTabbedTerminalWidget createTerminalWidget() {
+  @NotNull
+  public JBTabbedTerminalWidget createTerminalWidget(@NotNull Disposable parent) {
     final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
-    JBTabbedTerminalWidget terminalWidget = new JBTabbedTerminalWidget(provider, new Predicate<TerminalWidget>() {
+    JBTabbedTerminalWidget terminalWidget = new JBTabbedTerminalWidget(myProject, provider, new Predicate<TerminalWidget>() {
       @Override
       public boolean apply(TerminalWidget widget) {
         openSession(widget);
         return true;
       }
-    });
+    }, parent);
     openSession(terminalWidget);
     return terminalWidget;
   }
@@ -100,21 +102,12 @@ public abstract class AbstractTerminalRunner<T extends Process> {
     final DefaultActionGroup toolbarActions = new DefaultActionGroup();
     final ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false);
 
-    final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
-    TerminalWidget widget = new JBTabbedTerminalWidget(provider, new Predicate<TerminalWidget>() {
-      @Override
-      public boolean apply(TerminalWidget widget) {
-        openSession(widget);
-        return true;
-      }
-    });
-
-    openSession(widget, createTtyConnector(process));
+    
 
     final JPanel panel = new JPanel(new BorderLayout());
     panel.add(actionToolbar.getComponent(), BorderLayout.WEST);
 
-    panel.add(widget.getComponent(), BorderLayout.CENTER);
+    
 
     actionToolbar.setTargetComponent(panel);
 
@@ -127,12 +120,25 @@ public abstract class AbstractTerminalRunner<T extends Process> {
 
     toolbarActions.add(createCloseAction(defaultExecutor, contentDescriptor));
 
+    final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
+    TerminalWidget widget = new JBTabbedTerminalWidget(myProject, provider, new Predicate<TerminalWidget>() {
+      @Override
+      public boolean apply(TerminalWidget widget) {
+        openSession(widget);
+        return true;
+      }
+    }, contentDescriptor);
+
+    openSession(widget, createTtyConnector(process));
+
+    panel.add(widget.getComponent(), BorderLayout.CENTER);
+
     showConsole(defaultExecutor, contentDescriptor, widget.getComponent());
 
     processHandler.startNotify();
   }
 
-  public static void openSession(TerminalWidget terminal, TtyConnector ttyConnector) {
+  public static void openSession(@NotNull TerminalWidget terminal, @NotNull TtyConnector ttyConnector) {
     TerminalSession session = terminal.createTerminalSession(ttyConnector);
     session.start();
   }
@@ -163,7 +169,7 @@ public abstract class AbstractTerminalRunner<T extends Process> {
     return myProject;
   }
 
-  public void openSession(TerminalWidget terminalWidget) {
+  public void openSession(@NotNull TerminalWidget terminalWidget) {
     // Create Server process
     try {
       final T process = createProcess();
@@ -171,7 +177,7 @@ public abstract class AbstractTerminalRunner<T extends Process> {
       openSession(terminalWidget, createTtyConnector(process));
     }
     catch (Exception e) {
-      throw new RuntimeException(e.getMessage(), e);
+      LOG.error("Can't open terminal session:" + e.getMessage(), e);
     }
   }
 }

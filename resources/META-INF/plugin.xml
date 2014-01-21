@@ -1,7 +1,7 @@
 <idea-plugin version="2">
 	<name>Terminal</name>
 	<id>org.jetbrains.plugins.terminal</id>
-	<version>0.1</version>
+	<version>SNAPSHOT</version>
 	<vendor>JetBrains</vendor>
 	<description>Embedded Terminal</description>
 
@@ -14,12 +14,25 @@
 	</actions>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
-
 		<toolWindow id="Terminal" anchor="bottom" icon="TerminalIcons.OpenTerminal_13x13"
 					factoryClass="org.jetbrains.plugins.terminal.TerminalToolWindowFactory" secondary="false"/>
 
-		<applicationService serviceInterface="org.jetbrains.plugins.terminal.TerminalView"
-							serviceImplementation="org.jetbrains.plugins.terminal.TerminalView"/>
+		<projectConfigurable instance="org.jetbrains.plugins.terminal.TerminalOptionsConfigurable"/>
+
+		<fileEditorProvider implementation="org.jetbrains.plugins.terminal.vfs.TerminalSessionEditorProvider"/>
 	</extensions>
+
+	<project-components>
+		<component>
+			<interface-class>org.jetbrains.plugins.terminal.TerminalView</interface-class>
+			<implementation-class>org.jetbrains.plugins.terminal.TerminalView</implementation-class>
+		</component>
+	</project-components>
+
+	<application-components>
+		<component>
+			<interface-class>org.jetbrains.plugins.terminal.TerminalOptionsProvider</interface-class>
+			<implementation-class>org.jetbrains.plugins.terminal.TerminalOptionsProvider</implementation-class>
+		</component>
+	</application-components>
 </idea-plugin>

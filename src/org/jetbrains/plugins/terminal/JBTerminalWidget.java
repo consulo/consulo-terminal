@@ -1,13 +1,8 @@
 package org.jetbrains.plugins.terminal;
 
-import com.intellij.application.options.OptionsConstants;
-import com.intellij.openapi.editor.colors.*;
-import com.intellij.openapi.editor.markup.TextAttributes;
-import com.intellij.openapi.options.FontSize;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.components.JBScrollBar;
-import com.intellij.util.containers.HashMap;
 import com.jediterm.terminal.TerminalStarter;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.display.BackBuffer;
@@ -15,28 +10,27 @@ import com.jediterm.terminal.display.JediTerminal;
 import com.jediterm.terminal.display.StyleState;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
-import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.EnumMap;
-import java.util.Map;
 
-public class JBTerminalWidget extends JediTermWidget {
+public class JBTerminalWidget extends JediTermWidget implements Disposable{
 
-  public JBTerminalWidget(SettingsProvider settingsProvider) {
+  public JBTerminalWidget(JBTerminalSystemSettingsProvider settingsProvider, Disposable parent) {
     super(settingsProvider);
 
     JBTabbedTerminalWidget.convertActions(this, getActions());
+
+    Disposer.register(parent, this);
   }
 
   @Override
   protected JBTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider,
                                                 @NotNull StyleState styleState,
                                                 @NotNull BackBuffer backBuffer) {
-    return new JBTerminalPanel(settingsProvider, backBuffer, styleState);
+    JBTerminalPanel panel = new JBTerminalPanel((JBTerminalSystemSettingsProvider)settingsProvider, backBuffer, styleState);
+    Disposer.register(this, panel);
+    return panel;
   }
 
   @Override
@@ -49,5 +43,7 @@ public class JBTerminalWidget extends JediTermWidget {
     return new JBScrollBar();
   }
 
-
+  @Override
+  public void dispose() {
+  }
 }
