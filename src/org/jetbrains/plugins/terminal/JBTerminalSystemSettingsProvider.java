@@ -1,5 +1,18 @@
 package org.jetbrains.plugins.terminal;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.KeyStroke;
+
+import org.jdom.Element;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.Sets;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.ui.UISettings;
@@ -7,13 +20,17 @@ import com.intellij.ide.ui.UISettingsListener;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.actionSystem.Shortcut;
-import com.intellij.openapi.editor.colors.*;
+import com.intellij.openapi.editor.colors.ColorKey;
+import com.intellij.openapi.editor.colors.EditorColors;
+import com.intellij.openapi.editor.colors.EditorColorsManager;
+import com.intellij.openapi.editor.colors.EditorColorsScheme;
+import com.intellij.openapi.editor.colors.EditorFontType;
+import com.intellij.openapi.editor.colors.FontPreferences;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable;
 import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.options.FontSize;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.util.containers.HashMap;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TerminalColor;
@@ -21,14 +38,6 @@ import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.settings.DefaultTabbedSettingsProvider;
-import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
 
 /**
  * @author traff
@@ -378,11 +387,7 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
     }
 
     @Override
-    public void readExternal(Element element) throws InvalidDataException {
-    }
-
-    @Override
-    public void writeExternal(Element element) throws WriteExternalException {
+    public void readExternal(Element element) {
     }
 
     public void updateGlobalScheme() {
