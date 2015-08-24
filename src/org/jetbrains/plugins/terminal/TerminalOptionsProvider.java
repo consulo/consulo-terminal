@@ -1,5 +1,5 @@
 /*
- * Copyright 2000-2013 JetBrains s.r.o.
+ * Copyright 2000-2015 JetBrains s.r.o.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,8 @@ package org.jetbrains.plugins.terminal;
 
 import java.io.File;
 
-import org.jetbrains.annotations.NotNull;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.components.ExportableApplicationComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
@@ -32,20 +29,14 @@ import com.intellij.openapi.util.SystemInfo;
  */
 @State(
 		name = "TerminalOptionsProvider",
-		storages = {
-				@Storage(
-						file = StoragePathMacros.APP_CONFIG + "/terminal.xml"
-				)
-		}
-)
-public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>,
-		ExportableApplicationComponent
+		storages = @Storage(file = StoragePathMacros.APP_CONFIG + "/terminal.xml"))
+public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>
 {
 	private State myState = new State();
 
 	public static TerminalOptionsProvider getInstance()
 	{
-		return ApplicationManager.getApplication().getComponent(TerminalOptionsProvider.class);
+		return ServiceManager.getService(TerminalOptionsProvider.class);
 	}
 
 	@Override
@@ -64,6 +55,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		myState.myTabName = state.myTabName;
 		myState.myCopyOnSelection = state.myCopyOnSelection;
 		myState.myPasteOnMiddleMouseButton = state.myPasteOnMiddleMouseButton;
+		myState.myOverrideIdeShortcuts = state.myOverrideIdeShortcuts;
 	}
 
 	public boolean closeSessionOnLogout()
@@ -86,6 +78,16 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		return myState.myTabName;
 	}
 
+	public boolean overrideIdeShortcuts()
+	{
+		return myState.myOverrideIdeShortcuts;
+	}
+
+	public void setOverrideIdeShortcuts(boolean overrideIdeShortcuts)
+	{
+		myState.myOverrideIdeShortcuts = overrideIdeShortcuts;
+	}
+
 	public static class State
 	{
 		public String myShellPath = getDefaultShellPath();
@@ -95,6 +97,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		public boolean mySoundBell = true;
 		public boolean myCopyOnSelection = true;
 		public boolean myPasteOnMiddleMouseButton = true;
+		public boolean myOverrideIdeShortcuts = true;
 	}
 
 	public String getShellPath()
@@ -164,37 +167,6 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 	public void setPasteOnMiddleMouseButton(boolean pasteOnMiddleMouseButton)
 	{
 		myState.myPasteOnMiddleMouseButton = pasteOnMiddleMouseButton;
-	}
-
-	@Override
-	public void initComponent()
-	{
-	}
-
-	@Override
-	public void disposeComponent()
-	{
-	}
-
-	@NotNull
-	@Override
-	public File[] getExportFiles()
-	{
-		return new File[]{new File(PathManager.getOptionsPath() + File.separatorChar + "terminal.xml")};
-	}
-
-	@NotNull
-	@Override
-	public String getPresentableName()
-	{
-		return "TerminalOptions";
-	}
-
-	@NotNull
-	@Override
-	public String getComponentName()
-	{
-		return "TerminalOptionsProvider";
 	}
 }
 

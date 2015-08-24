@@ -1,9 +1,6 @@
 package org.jetbrains.plugins.terminal;
 
-import javax.swing.SwingUtilities;
-
 import com.intellij.ide.GeneralSettings;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.jediterm.terminal.Terminal;
 import com.jediterm.terminal.TerminalOutputStream;
@@ -47,21 +44,7 @@ public class JBTerminalStarter extends TerminalStarter
 		if(GeneralSettings.getInstance().isSyncOnFrameActivation())
 		{
 			//we need to refresh local file system after a command has been executed in the terminal
-			SwingUtilities.invokeLater(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					ApplicationManager.getApplication().runWriteAction(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							LocalFileSystem.getInstance().refresh(false);
-						}
-					});
-				}
-			});
+			LocalFileSystem.getInstance().refresh(true);
 		}
 	}
 }

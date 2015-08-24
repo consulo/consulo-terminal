@@ -1,3 +1,18 @@
+/*
+ * Copyright 2000-2014 JetBrains s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jetbrains.plugins.terminal;
 
 import java.awt.Color;
@@ -22,6 +37,7 @@ import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.actionSystem.Shortcut;
 import com.intellij.openapi.editor.colors.ColorKey;
 import com.intellij.openapi.editor.colors.EditorColors;
+import com.intellij.openapi.editor.colors.EditorColorsAdapter;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.intellij.openapi.editor.colors.EditorFontType;
@@ -42,13 +58,13 @@ import com.jediterm.terminal.ui.settings.DefaultTabbedSettingsProvider;
 /**
  * @author traff
  */
-class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider implements Disposable
+public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider implements Disposable
 {
 	private Set<TerminalSettingsListener> myListeners = Sets.newHashSet();
 
 	private final MyColorSchemeDelegate myColorScheme;
 
-	JBTerminalSystemSettingsProvider()
+	public JBTerminalSystemSettingsProvider()
 	{
 		myColorScheme = createBoundColorSchemeDelegate(null);
 
@@ -72,6 +88,16 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 					myColorScheme.setConsoleFontSize(size);
 					fireFontChanged();
 				}
+			}
+		}, this);
+
+		EditorColorsManager.getInstance().addEditorColorsListener(new EditorColorsAdapter()
+		{
+			@Override
+			public void globalSchemeChange(EditorColorsScheme scheme)
+			{
+				myColorScheme.updateGlobalScheme(scheme);
+				fireFontChanged();
 			}
 		}, this);
 	}
@@ -217,6 +243,20 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 		return EditorSettingsExternalizable.getInstance().getBlinkPeriod();
 	}
 
+	@Override
+	public int getBufferMaxLinesCount()
+	{
+		final int linesCount = 1000;
+		if(linesCount > 0)
+		{
+			return linesCount;
+		}
+		else
+		{
+			return super.getBufferMaxLinesCount();
+		}
+	}
+
 	public EditorColorsScheme getColorScheme()
 	{
 		return myColorScheme;
@@ -254,7 +294,7 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 	}
 
 	@Override
-	public boolean allowSelectionOnMouseReporting()
+	public boolean forceActionOnMouseReporting()
 	{
 		return true;
 	}
@@ -272,7 +312,6 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 		private final HashMap<TextAttributesKey, TextAttributes> myOwnAttributes = new HashMap<TextAttributesKey,
 				TextAttributes>();
 		private final HashMap<ColorKey, Color> myOwnColors = new HashMap<ColorKey, Color>();
-		private final EditorColorsScheme myCustomGlobalScheme;
 		private Map<EditorFontType, Font> myFontsMap = null;
 		private String myFaceName = null;
 		private EditorColorsScheme myGlobalScheme;
@@ -281,8 +320,7 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 
 		private MyColorSchemeDelegate(@Nullable final EditorColorsScheme globalScheme)
 		{
-			myCustomGlobalScheme = globalScheme;
-			updateGlobalScheme();
+			updateGlobalScheme(globalScheme);
 			initFonts();
 		}
 
@@ -291,6 +329,7 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 			return myGlobalScheme;
 		}
 
+		@NotNull
 		@Override
 		public String getName()
 		{
@@ -352,7 +391,9 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 		@Override
 		public Color getDefaultForeground()
 		{
-			return getGlobal().getDefaultForeground();
+			Color foregroundColor = getGlobal().getAttributes(ConsoleViewContentType.NORMAL_OUTPUT_KEY)
+					.getForegroundColor();
+			return foregroundColor != null ? foregroundColor : getGlobal().getDefaultForeground();
 		}
 
 		@Override
@@ -468,10 +509,10 @@ class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider imp
 		{
 		}
 
-		public void updateGlobalScheme()
+		public void updateGlobalScheme(EditorColorsScheme scheme)
 		{
-			myGlobalScheme = myCustomGlobalScheme == null ? EditorColorsManager.getInstance().getGlobalScheme() :
-					myCustomGlobalScheme;
+			myFontsMap = null;
+			myGlobalScheme = scheme == null ? EditorColorsManager.getInstance().getGlobalScheme() : scheme;
 		}
 
 		@NotNull

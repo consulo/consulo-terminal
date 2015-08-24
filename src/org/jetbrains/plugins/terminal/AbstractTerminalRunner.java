@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JPanel;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.google.common.base.Predicate;
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.Executor;
@@ -26,6 +27,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -83,7 +85,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		// Create Server process
 		try
 		{
-			final T process = createProcess();
+			final T process = createProcess(null);
 
 			UIUtil.invokeLaterIfNeeded(new Runnable()
 			{
@@ -100,7 +102,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		}
 	}
 
-	protected abstract T createProcess() throws ExecutionException;
+	protected abstract T createProcess(@Nullable String directory) throws ExecutionException;
 
 	protected abstract ProcessHandler createProcessHandler(T process);
 
@@ -109,16 +111,16 @@ public abstract class AbstractTerminalRunner<T extends Process>
 	{
 		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
 		JBTabbedTerminalWidget terminalWidget = new JBTabbedTerminalWidget(myProject, provider,
-				new Predicate<TerminalWidget>()
+				new Predicate<Pair<TerminalWidget, String>>()
 		{
 			@Override
-			public boolean apply(TerminalWidget widget)
+			public boolean apply(Pair<TerminalWidget, String> widget)
 			{
-				openSession(widget);
+				openSessionInDirectory(widget.getFirst(), widget.getSecond());
 				return true;
 			}
 		}, parent);
-		openSession(terminalWidget);
+		openSessionInDirectory(terminalWidget, null);
 		return terminalWidget;
 	}
 
@@ -146,17 +148,18 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		toolbarActions.add(createCloseAction(defaultExecutor, contentDescriptor));
 
 		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
-		TerminalWidget widget = new JBTabbedTerminalWidget(myProject, provider, new Predicate<TerminalWidget>()
+		TerminalWidget widget = new JBTabbedTerminalWidget(myProject, provider, new Predicate<Pair<TerminalWidget,
+				String>>()
 		{
 			@Override
-			public boolean apply(TerminalWidget widget)
+			public boolean apply(Pair<TerminalWidget, String> widget)
 			{
-				openSession(widget);
+				openSessionInDirectory(widget.getFirst(), widget.getSecond());
 				return true;
 			}
 		}, contentDescriptor);
 
-		openSession(widget, createTtyConnector(process));
+		createAndStartSession(widget, createTtyConnector(process));
 
 		panel.add(widget.getComponent(), BorderLayout.CENTER);
 
@@ -165,7 +168,12 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		processHandler.startNotify();
 	}
 
-	public static void openSession(@NotNull TerminalWidget terminal, @NotNull TtyConnector ttyConnector)
+	public void openSession(@NotNull TerminalWidget terminal)
+	{
+		openSessionInDirectory(terminal, null);
+	}
+
+	public static void createAndStartSession(@NotNull TerminalWidget terminal, @NotNull TtyConnector ttyConnector)
 	{
 		TerminalSession session = terminal.createTerminalSession(ttyConnector);
 		session.start();
@@ -180,8 +188,9 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		return new CloseAction(defaultExecutor, myDescriptor, myProject);
 	}
 
-
-	protected void showConsole(Executor defaultExecutor, RunContentDescriptor myDescriptor, final Component toFocus)
+	protected void showConsole(Executor defaultExecutor,
+			@NotNull RunContentDescriptor myDescriptor,
+			final Component toFocus)
 	{
 		// Show in run toolwindow
 		ExecutionManager.getInstance(myProject).getContentManager().showRunContent(defaultExecutor, myDescriptor);
@@ -197,23 +206,27 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		});
 	}
 
+	@NotNull
 	protected Project getProject()
 	{
 		return myProject;
 	}
 
-	public void openSession(@NotNull TerminalWidget terminalWidget)
+	public abstract String runningTargetName();
+
+
+	public void openSessionInDirectory(@NotNull TerminalWidget terminalWidget, @Nullable String directory)
 	{
 		// Create Server process
 		try
 		{
-			final T process = createProcess();
+			final T process = createProcess(directory);
 
-			openSession(terminalWidget, createTtyConnector(process));
+			createAndStartSession(terminalWidget, createTtyConnector(process));
 		}
 		catch(Exception e)
 		{
-			LOG.error("Can't open terminal session:" + e.getMessage(), e);
+			Messages.showErrorDialog(e.getMessage(), "Can't Open " + runningTargetName());
 		}
 	}
 }

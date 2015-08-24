@@ -39,6 +39,7 @@ public class TerminalSettingsPanel
 	private JTextField myTabNameTextField;
 	private JBCheckBox myPasteOnMiddleButtonCheckBox;
 	private JBCheckBox myCopyOnSelectionCheckBox;
+	private JBCheckBox myOverrideIdeShortcuts;
 	private TerminalOptionsProvider myOptionsProvider;
 
 	public JComponent createPanel(@NotNull TerminalOptionsProvider provider)
@@ -61,7 +62,8 @@ public class TerminalSettingsPanel
 				!= myOptionsProvider.closeSessionOnLogout()) || (myMouseReportCheckBox.isSelected() !=
 				myOptionsProvider.enableMouseReporting()) || (mySoundBellCheckBox.isSelected() != myOptionsProvider
 				.audibleBell()) || (myCopyOnSelectionCheckBox.isSelected() != myOptionsProvider.copyOnSelection()) ||
-				(myPasteOnMiddleButtonCheckBox.isSelected() != myOptionsProvider.pasteOnMiddleMouseButton());
+				(myPasteOnMiddleButtonCheckBox.isSelected() != myOptionsProvider.pasteOnMiddleMouseButton()) ||
+				(myOverrideIdeShortcuts.isSelected() != myOptionsProvider.overrideIdeShortcuts());
 	}
 
 	public void apply()
@@ -73,6 +75,7 @@ public class TerminalSettingsPanel
 		myOptionsProvider.setSoundBell(mySoundBellCheckBox.isSelected());
 		myOptionsProvider.setCopyOnSelection(myCopyOnSelectionCheckBox.isSelected());
 		myOptionsProvider.setPasteOnMiddleMouseButton(myPasteOnMiddleButtonCheckBox.isSelected());
+		myOptionsProvider.setOverrideIdeShortcuts(myOverrideIdeShortcuts.isSelected());
 	}
 
 	public void reset()
@@ -84,5 +87,6 @@ public class TerminalSettingsPanel
 		mySoundBellCheckBox.setSelected(myOptionsProvider.audibleBell());
 		myCopyOnSelectionCheckBox.setSelected(myOptionsProvider.copyOnSelection());
 		myPasteOnMiddleButtonCheckBox.setSelected(myOptionsProvider.pasteOnMiddleMouseButton());
+		myOverrideIdeShortcuts.setSelected(myOptionsProvider.overrideIdeShortcuts());
 	}
 }
