@@ -15,28 +15,32 @@
  */
 package org.jetbrains.plugins.terminal.vfs;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileTypes.ex.FakeFileType;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author traff
  */
-public class TerminalSessionFileType extends FakeFileType {
+public class TerminalSessionFileType extends FakeFileType
+{
 
-  public final static TerminalSessionFileType INSTANCE = new TerminalSessionFileType();
+	public final static TerminalSessionFileType INSTANCE = new TerminalSessionFileType();
 
-  @NotNull
-  public String getName() {
-    return "Terminal Session";
-  }
+	@NotNull
+	public String getName()
+	{
+		return "Terminal Session";
+	}
 
-  @NotNull
-  public String getDescription() {
-    return getName() + " Fake File Type";
-  }
+	@NotNull
+	public String getDescription()
+	{
+		return getName() + " Fake File Type";
+	}
 
-  public boolean isMyFileType(VirtualFile file) {
-    return file instanceof TerminalSessionVirtualFileImpl;
-  }
+	public boolean isMyFileType(VirtualFile file)
+	{
+		return file instanceof TerminalSessionVirtualFileImpl;
+	}
 }

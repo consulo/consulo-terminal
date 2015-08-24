@@ -46,131 +46,155 @@ import com.jediterm.terminal.ui.settings.TabbedSettingsProvider;
 /**
  * @author traff
  */
-public class TerminalSessionEditor extends UserDataHolderBase implements FileEditor {
+public class TerminalSessionEditor extends UserDataHolderBase implements FileEditor
+{
 
-  private Project myProject;
-  private final TerminalSessionVirtualFileImpl myFile;
-  private final TtyConnectorWaitFor myWaitFor;
+	private Project myProject;
+	private final TerminalSessionVirtualFileImpl myFile;
+	private final TtyConnectorWaitFor myWaitFor;
 
-  public TerminalSessionEditor(Project project, @NotNull TerminalSessionVirtualFileImpl terminalFile) {
-    myProject = project;
-    myFile = terminalFile;
+	public TerminalSessionEditor(Project project, @NotNull TerminalSessionVirtualFileImpl terminalFile)
+	{
+		myProject = project;
+		myFile = terminalFile;
 
-    final TabbedSettingsProvider settings = myFile.getSettingsProvider();
+		final TabbedSettingsProvider settings = myFile.getSettingsProvider();
 
-    myFile.getTerminal().setNextProvider(new TerminalActionProviderBase() {
-      @Override
-      public List<TerminalAction> getActions() {
-        return Lists.newArrayList(
-          new TerminalAction("Close Session", settings.getCloseSessionKeyStrokes(), new Predicate<KeyEvent>() {
-            @Override
-            public boolean apply(KeyEvent input) {
-              handleCloseSession();
-              return true;
-            }
-          }).withMnemonicKey(KeyEvent.VK_S)
-        );
-      }
-    });
+		myFile.getTerminal().setNextProvider(new TerminalActionProviderBase()
+		{
+			@Override
+			public List<TerminalAction> getActions()
+			{
+				return Lists.newArrayList(new TerminalAction("Close Session", settings.getCloseSessionKeyStrokes(),
+						new Predicate<KeyEvent>()
+				{
+					@Override
+					public boolean apply(KeyEvent input)
+					{
+						handleCloseSession();
+						return true;
+					}
+				}).withMnemonicKey(KeyEvent.VK_S));
+			}
+		});
 
-    myWaitFor = new TtyConnectorWaitFor(myFile.getTerminal().getTtyConnector(), Executors.newSingleThreadExecutor());
+		myWaitFor = new TtyConnectorWaitFor(myFile.getTerminal().getTtyConnector(), Executors.newSingleThreadExecutor
+				());
 
-    myWaitFor
-      .setTerminationCallback(new Predicate<Integer>() {
-        @Override
-        public boolean apply(Integer integer) {
-          ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-              FileEditorManagerEx.getInstanceEx(myProject).closeFile(myFile);
-            }
-          });
+		myWaitFor.setTerminationCallback(new Predicate<Integer>()
+		{
+			@Override
+			public boolean apply(Integer integer)
+			{
+				ApplicationManager.getApplication().invokeLater(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						FileEditorManagerEx.getInstanceEx(myProject).closeFile(myFile);
+					}
+				});
 
-          return true;
-        }
-      });
-  }
+				return true;
+			}
+		});
+	}
 
-  private void handleCloseSession() {
-    myFile.getTerminal().close();
-  }
+	private void handleCloseSession()
+	{
+		myFile.getTerminal().close();
+	}
 
-  @NotNull
-  @Override
-  public JComponent getComponent() {
-    return myFile.getTerminal();
-  }
+	@NotNull
+	@Override
+	public JComponent getComponent()
+	{
+		return myFile.getTerminal();
+	}
 
-  @Nullable
-  @Override
-  public JComponent getPreferredFocusedComponent() {
-    return myFile.getTerminal();
-  }
+	@Nullable
+	@Override
+	public JComponent getPreferredFocusedComponent()
+	{
+		return myFile.getTerminal();
+	}
 
-  @NotNull
-  @Override
-  public String getName() {
-    return myFile.getName();
-  }
+	@NotNull
+	@Override
+	public String getName()
+	{
+		return myFile.getName();
+	}
 
-  @NotNull
-  @Override
-  public FileEditorState getState(@NotNull FileEditorStateLevel level) {
-    return FileEditorState.INSTANCE;
-  }
+	@NotNull
+	@Override
+	public FileEditorState getState(@NotNull FileEditorStateLevel level)
+	{
+		return FileEditorState.INSTANCE;
+	}
 
-  @Override
-  public void setState(@NotNull FileEditorState state) {
+	@Override
+	public void setState(@NotNull FileEditorState state)
+	{
 
-  }
+	}
 
-  @Override
-  public boolean isModified() {
-    return false;
-  }
+	@Override
+	public boolean isModified()
+	{
+		return false;
+	}
 
-  @Override
-  public boolean isValid() {
-    return true;
-  }
+	@Override
+	public boolean isValid()
+	{
+		return true;
+	}
 
-  @Override
-  public void selectNotify() {
+	@Override
+	public void selectNotify()
+	{
 
-  }
+	}
 
-  @Override
-  public void deselectNotify() {
+	@Override
+	public void deselectNotify()
+	{
 
-  }
+	}
 
-  @Override
-  public void addPropertyChangeListener(@NotNull PropertyChangeListener listener) {
+	@Override
+	public void addPropertyChangeListener(@NotNull PropertyChangeListener listener)
+	{
 
-  }
+	}
 
-  @Override
-  public void removePropertyChangeListener(@NotNull PropertyChangeListener listener) {
+	@Override
+	public void removePropertyChangeListener(@NotNull PropertyChangeListener listener)
+	{
 
-  }
+	}
 
-  @Nullable
-  @Override
-  public BackgroundEditorHighlighter getBackgroundHighlighter() {
-    return null;
-  }
+	@Nullable
+	@Override
+	public BackgroundEditorHighlighter getBackgroundHighlighter()
+	{
+		return null;
+	}
 
-  @Nullable
-  @Override
-  public FileEditorLocation getCurrentLocation() {
-    return null;
-  }
+	@Nullable
+	@Override
+	public FileEditorLocation getCurrentLocation()
+	{
+		return null;
+	}
 
-  @Nullable
-  @Override
-  public StructureViewBuilder getStructureViewBuilder() {
-    return null;
-  }
+	@Nullable
+	@Override
+	public StructureViewBuilder getStructureViewBuilder()
+	{
+		return null;
+	}
 
 	@Nullable
 	@Override
@@ -180,11 +204,13 @@ public class TerminalSessionEditor extends UserDataHolderBase implements FileEdi
 	}
 
 	@Override
-  public void dispose() {
-    Boolean closingToReopen = myFile.getUserData(FileEditorManagerImpl.CLOSING_TO_REOPEN);
-    myWaitFor.detach();
-    if (closingToReopen == null || !closingToReopen) {
-      myFile.getTerminal().close();
-    }
-  }
+	public void dispose()
+	{
+		Boolean closingToReopen = myFile.getUserData(FileEditorManagerImpl.CLOSING_TO_REOPEN);
+		myWaitFor.detach();
+		if(closingToReopen == null || !closingToReopen)
+		{
+			myFile.getTerminal().close();
+		}
+	}
 }

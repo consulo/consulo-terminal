@@ -15,74 +15,74 @@
  */
 package org.jetbrains.plugins.terminal;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.ui.components.JBCheckBox;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
 
 /**
  * @author traff
  */
-public class TerminalSettingsPanel {
-  private JPanel myWholePanel;
-  private TextFieldWithBrowseButton myShellPathField;
-  private JBCheckBox mySoundBellCheckBox;
-  private JBCheckBox myCloseSessionCheckBox;
-  private JBCheckBox myMouseReportCheckBox;
-  private JTextField myTabNameTextField;
-  private JBCheckBox myPasteOnMiddleButtonCheckBox;
-  private JBCheckBox myCopyOnSelectionCheckBox;
-  private TerminalOptionsProvider myOptionsProvider;
+public class TerminalSettingsPanel
+{
+	private JPanel myWholePanel;
+	private TextFieldWithBrowseButton myShellPathField;
+	private JBCheckBox mySoundBellCheckBox;
+	private JBCheckBox myCloseSessionCheckBox;
+	private JBCheckBox myMouseReportCheckBox;
+	private JTextField myTabNameTextField;
+	private JBCheckBox myPasteOnMiddleButtonCheckBox;
+	private JBCheckBox myCopyOnSelectionCheckBox;
+	private TerminalOptionsProvider myOptionsProvider;
 
-  public JComponent createPanel(@NotNull TerminalOptionsProvider provider) {
-    myOptionsProvider = provider;
+	public JComponent createPanel(@NotNull TerminalOptionsProvider provider)
+	{
+		myOptionsProvider = provider;
 
-    FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true, false, false, false, false, false);
+		FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(true, false, false, false, false,
+				false);
 
-    myShellPathField.addBrowseFolderListener(
-      "",
-      "Shell Executable Path",
-      null,
-      fileChooserDescriptor,
-      TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT,
-      false
-    );
+		myShellPathField.addBrowseFolderListener("", "Shell Executable Path", null, fileChooserDescriptor,
+				TextComponentAccessor.TEXT_FIELD_WHOLE_TEXT, false);
 
-    return myWholePanel;
-  }
+		return myWholePanel;
+	}
 
-  public boolean isModified() {
-    return !Comparing.equal(myShellPathField.getText(), myOptionsProvider.getShellPath())
-           || !Comparing.equal(myTabNameTextField.getText(), myOptionsProvider.getTabName())
-           || (myCloseSessionCheckBox.isSelected() != myOptionsProvider.closeSessionOnLogout())
-           || (myMouseReportCheckBox.isSelected() != myOptionsProvider.enableMouseReporting())
-           || (mySoundBellCheckBox.isSelected() != myOptionsProvider.audibleBell())
-           || (myCopyOnSelectionCheckBox.isSelected() != myOptionsProvider.copyOnSelection())
-           || (myPasteOnMiddleButtonCheckBox.isSelected() != myOptionsProvider.pasteOnMiddleMouseButton())
-      ;
-  }
+	public boolean isModified()
+	{
+		return !Comparing.equal(myShellPathField.getText(), myOptionsProvider.getShellPath()) || !Comparing.equal
+				(myTabNameTextField.getText(), myOptionsProvider.getTabName()) || (myCloseSessionCheckBox.isSelected()
+				!= myOptionsProvider.closeSessionOnLogout()) || (myMouseReportCheckBox.isSelected() !=
+				myOptionsProvider.enableMouseReporting()) || (mySoundBellCheckBox.isSelected() != myOptionsProvider
+				.audibleBell()) || (myCopyOnSelectionCheckBox.isSelected() != myOptionsProvider.copyOnSelection()) ||
+				(myPasteOnMiddleButtonCheckBox.isSelected() != myOptionsProvider.pasteOnMiddleMouseButton());
+	}
 
-  public void apply() {
-    myOptionsProvider.setShellPath(myShellPathField.getText());
-    myOptionsProvider.setTabName(myTabNameTextField.getText());
-    myOptionsProvider.setCloseSessionOnLogout(myCloseSessionCheckBox.isSelected());
-    myOptionsProvider.setReportMouse(myMouseReportCheckBox.isSelected());
-    myOptionsProvider.setSoundBell(mySoundBellCheckBox.isSelected());
-    myOptionsProvider.setCopyOnSelection(myCopyOnSelectionCheckBox.isSelected());
-    myOptionsProvider.setPasteOnMiddleMouseButton(myPasteOnMiddleButtonCheckBox.isSelected());
-  }
+	public void apply()
+	{
+		myOptionsProvider.setShellPath(myShellPathField.getText());
+		myOptionsProvider.setTabName(myTabNameTextField.getText());
+		myOptionsProvider.setCloseSessionOnLogout(myCloseSessionCheckBox.isSelected());
+		myOptionsProvider.setReportMouse(myMouseReportCheckBox.isSelected());
+		myOptionsProvider.setSoundBell(mySoundBellCheckBox.isSelected());
+		myOptionsProvider.setCopyOnSelection(myCopyOnSelectionCheckBox.isSelected());
+		myOptionsProvider.setPasteOnMiddleMouseButton(myPasteOnMiddleButtonCheckBox.isSelected());
+	}
 
-  public void reset() {
-    myShellPathField.setText(myOptionsProvider.getShellPath());
-    myTabNameTextField.setText(myOptionsProvider.getTabName());
-    myCloseSessionCheckBox.setSelected(myOptionsProvider.closeSessionOnLogout());
-    myMouseReportCheckBox.setSelected(myOptionsProvider.enableMouseReporting());
-    mySoundBellCheckBox.setSelected(myOptionsProvider.audibleBell());
-    myCopyOnSelectionCheckBox.setSelected(myOptionsProvider.copyOnSelection());
-    myPasteOnMiddleButtonCheckBox.setSelected(myOptionsProvider.pasteOnMiddleMouseButton());
-  }
+	public void reset()
+	{
+		myShellPathField.setText(myOptionsProvider.getShellPath());
+		myTabNameTextField.setText(myOptionsProvider.getTabName());
+		myCloseSessionCheckBox.setSelected(myOptionsProvider.closeSessionOnLogout());
+		myMouseReportCheckBox.setSelected(myOptionsProvider.enableMouseReporting());
+		mySoundBellCheckBox.setSelected(myOptionsProvider.audibleBell());
+		myCopyOnSelectionCheckBox.setSelected(myOptionsProvider.copyOnSelection());
+		myPasteOnMiddleButtonCheckBox.setSelected(myOptionsProvider.pasteOnMiddleMouseButton());
+	}
 }

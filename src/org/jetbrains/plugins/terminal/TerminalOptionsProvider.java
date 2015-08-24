@@ -15,152 +15,186 @@
  */
 package org.jetbrains.plugins.terminal;
 
+import java.io.File;
+
+import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.ExportableApplicationComponent;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
+import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.util.SystemInfo;
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
 
 /**
  * @author traff
  */
 @State(
-  name = "TerminalOptionsProvider",
-  storages = {
-    @Storage(
-      file = StoragePathMacros.APP_CONFIG + "/terminal.xml"
-    )}
+		name = "TerminalOptionsProvider",
+		storages = {
+				@Storage(
+						file = StoragePathMacros.APP_CONFIG + "/terminal.xml"
+				)
+		}
 )
-public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>, ExportableApplicationComponent {
-  private State myState = new State();
+public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>,
+		ExportableApplicationComponent
+{
+	private State myState = new State();
 
-  public static TerminalOptionsProvider getInstance() {
-    return ApplicationManager.getApplication().getComponent(TerminalOptionsProvider.class);
-  }
+	public static TerminalOptionsProvider getInstance()
+	{
+		return ApplicationManager.getApplication().getComponent(TerminalOptionsProvider.class);
+	}
 
-  @Override
-  public State getState() {
-    return myState;
-  }
+	@Override
+	public State getState()
+	{
+		return myState;
+	}
 
-  @Override
-  public void loadState(State state) {
-    myState.myShellPath = state.myShellPath;
-    myState.myCloseSessionOnLogout = state.myCloseSessionOnLogout;
-    myState.myReportMouse = state.myReportMouse;
-    myState.mySoundBell = state.mySoundBell;
-    myState.myTabName = state.myTabName;
-    myState.myCopyOnSelection = state.myCopyOnSelection;
-    myState.myPasteOnMiddleMouseButton = state.myPasteOnMiddleMouseButton;
-  }
+	@Override
+	public void loadState(State state)
+	{
+		myState.myShellPath = state.myShellPath;
+		myState.myCloseSessionOnLogout = state.myCloseSessionOnLogout;
+		myState.myReportMouse = state.myReportMouse;
+		myState.mySoundBell = state.mySoundBell;
+		myState.myTabName = state.myTabName;
+		myState.myCopyOnSelection = state.myCopyOnSelection;
+		myState.myPasteOnMiddleMouseButton = state.myPasteOnMiddleMouseButton;
+	}
 
-  public boolean closeSessionOnLogout() {
-    return myState.myCloseSessionOnLogout;
-  }
+	public boolean closeSessionOnLogout()
+	{
+		return myState.myCloseSessionOnLogout;
+	}
 
-  public boolean enableMouseReporting() {
-    return myState.myReportMouse;
-  }
+	public boolean enableMouseReporting()
+	{
+		return myState.myReportMouse;
+	}
 
-  public boolean audibleBell() {
-    return myState.mySoundBell;
-  }
+	public boolean audibleBell()
+	{
+		return myState.mySoundBell;
+	}
 
-  public String getTabName() {
-    return myState.myTabName;
-  }
+	public String getTabName()
+	{
+		return myState.myTabName;
+	}
 
-  public static class State {
-    public String myShellPath = getDefaultShellPath();
-    public String myTabName = "Local";
-    public boolean myCloseSessionOnLogout = true;
-    public boolean myReportMouse = true;
-    public boolean mySoundBell = true;
-    public boolean myCopyOnSelection = true;
-    public boolean myPasteOnMiddleMouseButton = true;
-  }
+	public static class State
+	{
+		public String myShellPath = getDefaultShellPath();
+		public String myTabName = "Local";
+		public boolean myCloseSessionOnLogout = true;
+		public boolean myReportMouse = true;
+		public boolean mySoundBell = true;
+		public boolean myCopyOnSelection = true;
+		public boolean myPasteOnMiddleMouseButton = true;
+	}
 
-  public String getShellPath() {
-    return myState.myShellPath;
-  }
+	public String getShellPath()
+	{
+		return myState.myShellPath;
+	}
 
-  private static String getDefaultShellPath() {
-    String shell = System.getenv("SHELL");
-    
-    if (shell != null && new File(shell).canExecute()) {
-      return shell;
-    }
-    
-    if (SystemInfo.isUnix) {
-      return "/bin/bash";
-    }
-    else {
-      return "cmd.exe";
-    }
-  }
+	private static String getDefaultShellPath()
+	{
+		String shell = System.getenv("SHELL");
 
-  public void setShellPath(String shellPath) {
-    myState.myShellPath = shellPath;
-  }
+		if(shell != null && new File(shell).canExecute())
+		{
+			return shell;
+		}
 
-  public void setTabName(String tabName) {
-    myState.myTabName = tabName;
-  }
+		if(SystemInfo.isUnix)
+		{
+			return "/bin/bash";
+		}
+		else
+		{
+			return "cmd.exe";
+		}
+	}
 
-  public void setCloseSessionOnLogout(boolean closeSessionOnLogout) {
-    myState.myCloseSessionOnLogout = closeSessionOnLogout;
-  }
+	public void setShellPath(String shellPath)
+	{
+		myState.myShellPath = shellPath;
+	}
 
-  public void setReportMouse(boolean reportMouse) {
-    myState.myReportMouse = reportMouse;
-  }
+	public void setTabName(String tabName)
+	{
+		myState.myTabName = tabName;
+	}
 
-  public void setSoundBell(boolean soundBell) {
-    myState.mySoundBell = soundBell;
-  }
+	public void setCloseSessionOnLogout(boolean closeSessionOnLogout)
+	{
+		myState.myCloseSessionOnLogout = closeSessionOnLogout;
+	}
 
-  public boolean copyOnSelection() {
-    return myState.myCopyOnSelection;
-  }
+	public void setReportMouse(boolean reportMouse)
+	{
+		myState.myReportMouse = reportMouse;
+	}
 
-  public void setCopyOnSelection(boolean copyOnSelection) {
-    myState.myCopyOnSelection = copyOnSelection;
-  }
+	public void setSoundBell(boolean soundBell)
+	{
+		myState.mySoundBell = soundBell;
+	}
 
-  public boolean pasteOnMiddleMouseButton() {
-    return myState.myPasteOnMiddleMouseButton;
-  }
+	public boolean copyOnSelection()
+	{
+		return myState.myCopyOnSelection;
+	}
 
-  public void setPasteOnMiddleMouseButton(boolean pasteOnMiddleMouseButton) {
-    myState.myPasteOnMiddleMouseButton = pasteOnMiddleMouseButton;
-  }
+	public void setCopyOnSelection(boolean copyOnSelection)
+	{
+		myState.myCopyOnSelection = copyOnSelection;
+	}
 
-  @Override
-  public void initComponent() {
-  }
+	public boolean pasteOnMiddleMouseButton()
+	{
+		return myState.myPasteOnMiddleMouseButton;
+	}
 
-  @Override
-  public void disposeComponent() {
-  }
+	public void setPasteOnMiddleMouseButton(boolean pasteOnMiddleMouseButton)
+	{
+		myState.myPasteOnMiddleMouseButton = pasteOnMiddleMouseButton;
+	}
 
-  @NotNull
-  @Override
-  public File[] getExportFiles() {
-    return new File[]{new File(PathManager.getOptionsPath() + File.separatorChar + "terminal.xml")};
-  }
+	@Override
+	public void initComponent()
+	{
+	}
 
-  @NotNull
-  @Override
-  public String getPresentableName() {
-    return "TerminalOptions";
-  }
+	@Override
+	public void disposeComponent()
+	{
+	}
 
-  @NotNull
-  @Override
-  public String getComponentName() {
-    return "TerminalOptionsProvider";
-  }
+	@NotNull
+	@Override
+	public File[] getExportFiles()
+	{
+		return new File[]{new File(PathManager.getOptionsPath() + File.separatorChar + "terminal.xml")};
+	}
+
+	@NotNull
+	@Override
+	public String getPresentableName()
+	{
+		return "TerminalOptions";
+	}
+
+	@NotNull
+	@Override
+	public String getComponentName()
+	{
+		return "TerminalOptionsProvider";
+	}
 }
 

@@ -19,41 +19,46 @@
  */
 package org.jetbrains.plugins.terminal.vfs;
 
+import org.jetbrains.annotations.NotNull;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.tabs.TabInfo;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.settings.TabbedSettingsProvider;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author traff
  */
-public class TerminalSessionVirtualFileImpl extends LightVirtualFile {
-  private final JediTermWidget myTerminal;
-  private TabbedSettingsProvider mySettingsProvider;
+public class TerminalSessionVirtualFileImpl extends LightVirtualFile
+{
+	private final JediTermWidget myTerminal;
+	private TabbedSettingsProvider mySettingsProvider;
 
-  private final TabInfo myTabInfo;
+	private final TabInfo myTabInfo;
 
-  public TerminalSessionVirtualFileImpl(@NotNull TabInfo tabInfo,
-                                        @NotNull JediTermWidget terminal,
-                                        @NotNull TabbedSettingsProvider settingsProvider) {
-    myTabInfo = tabInfo;
-    myTerminal = terminal;
-    mySettingsProvider = settingsProvider;
-    setFileType(TerminalSessionFileType.INSTANCE);
-    setWritable(true);
-  }
+	public TerminalSessionVirtualFileImpl(@NotNull TabInfo tabInfo,
+			@NotNull JediTermWidget terminal,
+			@NotNull TabbedSettingsProvider settingsProvider)
+	{
+		myTabInfo = tabInfo;
+		myTerminal = terminal;
+		mySettingsProvider = settingsProvider;
+		setFileType(TerminalSessionFileType.INSTANCE);
+		setWritable(true);
+	}
 
-  public JediTermWidget getTerminal() {
-    return myTerminal;
-  }
+	public JediTermWidget getTerminal()
+	{
+		return myTerminal;
+	}
 
-  @NotNull
-  public String getName() {
-    return myTabInfo.getText();
-  }
+	@NotNull
+	public String getName()
+	{
+		return myTabInfo.getText();
+	}
 
-  public TabbedSettingsProvider getSettingsProvider() {
-    return mySettingsProvider;
-  }
+	public TabbedSettingsProvider getSettingsProvider()
+	{
+		return mySettingsProvider;
+	}
 }
