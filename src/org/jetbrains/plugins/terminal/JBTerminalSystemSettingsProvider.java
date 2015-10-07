@@ -48,6 +48,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.options.FontSize;
 import com.intellij.util.containers.HashMap;
+import com.intellij.util.ui.JBUI;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TerminalColor;
 import com.jediterm.terminal.TextStyle;
@@ -432,6 +433,12 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		}
 
 		@Override
+		public int getEditorFontSize(boolean scale)
+		{
+			return getGlobal().getEditorFontSize(scale);
+		}
+
+		@Override
 		public void setEditorFontSize(int fontSize)
 		{
 
@@ -499,7 +506,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 
 		@Override
 		@Nullable
-		public Object clone()
+		public MyColorSchemeDelegate clone()
 		{
 			return null;
 		}
@@ -552,13 +559,19 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		@Override
 		public int getConsoleFontSize()
 		{
+			return getConsoleFontSize(true);
+		}
+
+		@Override
+		public int getConsoleFontSize(boolean scale)
+		{
 			if(myConsoleFontSize == -1)
 			{
-				return getGlobal().getConsoleFontSize();
+				return getGlobal().getConsoleFontSize(scale);
 			}
 			else
 			{
-				return myConsoleFontSize;
+				return JBUI.scale(myConsoleFontSize);
 			}
 		}
 
