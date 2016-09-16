@@ -1,6 +1,6 @@
 <idea-plugin version="2">
-	<name>Terminal</name>
 	<id>org.jetbrains.plugins.terminal</id>
+	<name>Terminal</name>
 	<version>SNAPSHOT</version>
 	<vendor>JetBrains</vendor>
 	<description>Embedded Terminal</description>
