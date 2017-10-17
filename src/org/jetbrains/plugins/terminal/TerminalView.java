@@ -23,6 +23,7 @@ import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
@@ -127,13 +128,13 @@ public class TerminalView
 		SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true)
 		{
 			@Override
-			public Object getData(@NonNls String dataId)
+			public Object getData(@NotNull Key<?> dataId)
 			{
-				return PlatformDataKeys.HELP_ID.is(dataId) ? EventLog.HELP_ID : super.getData(dataId);
+				return PlatformDataKeys.HELP_ID == dataId ? EventLog.HELP_ID : super.getData(dataId);
 			}
 		};
 
-		final Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", false);
+		final Content content = ContentFactory.getInstance().createContent(panel, "", false);
 		content.setCloseable(true);
 
 		myTerminalWidget = terminalRunner.createTerminalWidget(content);
