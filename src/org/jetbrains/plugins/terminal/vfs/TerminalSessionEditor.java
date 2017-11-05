@@ -198,7 +198,7 @@ public class TerminalSessionEditor extends UserDataHolderBase implements FileEdi
 
 	@Nullable
 	@Override
-	public VirtualFile getVirtualFile()
+	public VirtualFile getFile()
 	{
 		return myFile;
 	}
