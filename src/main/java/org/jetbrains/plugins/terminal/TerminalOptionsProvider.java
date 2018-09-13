@@ -17,6 +17,8 @@ package org.jetbrains.plugins.terminal;
 
 import java.io.File;
 
+import javax.inject.Singleton;
+
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -27,9 +29,8 @@ import com.intellij.openapi.util.SystemInfo;
 /**
  * @author traff
  */
-@State(
-		name = "TerminalOptionsProvider",
-		storages = @Storage(file = StoragePathMacros.APP_CONFIG + "/terminal.xml"))
+@Singleton
+@State(name = "TerminalOptionsProvider", storages = @Storage(file = StoragePathMacros.APP_CONFIG + "/terminal.xml"))
 public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>
 {
 	private State myState = new State();

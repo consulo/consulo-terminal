@@ -55,7 +55,7 @@ import com.jediterm.terminal.ui.TabbedTerminalWidget;
 import com.jediterm.terminal.ui.TerminalAction;
 import com.jediterm.terminal.ui.TerminalTabs;
 import com.jediterm.terminal.ui.TerminalWidget;
-import com.jediterm.terminal.ui.settings.SettingsProvider;
+import com.jediterm.terminal.ui.settings.TabbedSettingsProvider;
 
 /**
  * @author traff
@@ -148,7 +148,7 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 	}
 
 	@Override
-	protected JediTermWidget createInnerTerminalWidget(SettingsProvider settingsProvider)
+	protected JediTermWidget createInnerTerminalWidget(TabbedSettingsProvider settingsProvider)
 	{
 		return new JBTerminalWidget(mySettingsProvider, myParent);
 	}
@@ -220,6 +220,12 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 		public void setTabComponentAt(int index, Component component)
 		{
 			//nop
+		}
+
+		@Override
+		public int indexOfComponent(Component component)
+		{
+			return 0;
 		}
 
 		@Override

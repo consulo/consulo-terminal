@@ -3,9 +3,9 @@ package org.jetbrains.plugins.terminal;
 import com.intellij.ide.GeneralSettings;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.jediterm.terminal.Terminal;
-import com.jediterm.terminal.TerminalOutputStream;
+import com.jediterm.terminal.TerminalDataStream;
 import com.jediterm.terminal.TerminalStarter;
-import com.jediterm.terminal.TtyChannel;
+import com.jediterm.terminal.TtyBasedArrayDataStream;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.emulator.JediEmulator;
 
@@ -16,13 +16,13 @@ public class JBTerminalStarter extends TerminalStarter
 {
 	public JBTerminalStarter(Terminal terminal, TtyConnector ttyConnector)
 	{
-		super(terminal, ttyConnector);
+		super(terminal, ttyConnector, new TtyBasedArrayDataStream(ttyConnector));
 	}
 
 	@Override
-	protected JediEmulator createEmulator(TtyChannel channel, TerminalOutputStream stream, Terminal terminal)
+	protected JediEmulator createEmulator(TerminalDataStream dataStream, Terminal terminal)
 	{
-		return new JediEmulator(channel, stream, terminal)
+		return new JediEmulator(dataStream, terminal)
 		{
 			@Override
 			protected void unsupported(char... sequenceChars)

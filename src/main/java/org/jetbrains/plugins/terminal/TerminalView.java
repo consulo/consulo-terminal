@@ -4,9 +4,10 @@ import java.awt.Image;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
@@ -43,15 +44,16 @@ import com.jediterm.terminal.ui.TerminalWidget;
 /**
  * @author traff
  */
+@Singleton
 public class TerminalView
 {
-
 	private JBTabbedTerminalWidget myTerminalWidget;
 
 	private final Project myProject;
 
 	private TerminalDockContainer myDockContainer;
 
+	@Inject
 	public TerminalView(Project project)
 	{
 		myProject = project;
@@ -61,7 +63,6 @@ public class TerminalView
 	{
 		return project.getComponent(TerminalView.class);
 	}
-
 
 	public void initTerminal(final ToolWindow toolWindow)
 	{

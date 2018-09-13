@@ -20,19 +20,9 @@
 		<projectConfigurable instance="org.jetbrains.plugins.terminal.TerminalOptionsConfigurable"/>
 
 		<fileEditorProvider implementation="org.jetbrains.plugins.terminal.vfs.TerminalSessionEditorProvider"/>
+
+		<projectService serviceImplementation="org.jetbrains.plugins.terminal.TerminalView" lazy="false" />
+
+		<applicationService serviceImplementation="org.jetbrains.plugins.terminal.TerminalOptionsProvider" />
 	</extensions>
-
-	<project-components>
-		<component>
-			<interface-class>org.jetbrains.plugins.terminal.TerminalView</interface-class>
-			<implementation-class>org.jetbrains.plugins.terminal.TerminalView</implementation-class>
-		</component>
-	</project-components>
-
-	<application-components>
-		<component>
-			<interface-class>org.jetbrains.plugins.terminal.TerminalOptionsProvider</interface-class>
-			<implementation-class>org.jetbrains.plugins.terminal.TerminalOptionsProvider</implementation-class>
-		</component>
-	</application-components>
 </idea-plugin>

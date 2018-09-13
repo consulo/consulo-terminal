@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -57,7 +58,6 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.util.JBHiDPIScaledImage;
-import com.intellij.util.RetinaImage;
 import com.intellij.util.ui.UIUtil;
 import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.model.StyleState;
@@ -273,10 +273,6 @@ public class JBTerminalPanel extends TerminalPanel implements FocusListener, Ter
 			newG.scale(1, 1);
 			newG.dispose();
 		}
-		else if(RetinaImage.isAppleHiDPIScaledImage(image))
-		{
-			g.drawImage(image, dx1, dy1, dx2, dy2, sx1 * 2, sy1 * 2, sx2 * 2, sy2 * 2, observer);
-		}
 		else
 		{
 			g.drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, observer);
@@ -290,7 +286,7 @@ public class JBTerminalPanel extends TerminalPanel implements FocusListener, Ter
 	}
 
 	@Override
-	protected String getClipboardContent() throws IOException, UnsupportedFlavorException
+	protected String getClipboardContent(Clipboard clipboard) throws IOException, UnsupportedFlavorException
 	{
 		return CopyPasteManager.getInstance().getContents(DataFlavor.stringFlavor);
 	}
@@ -300,7 +296,6 @@ public class JBTerminalPanel extends TerminalPanel implements FocusListener, Ter
 	{
 		return UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	}
-
 
 	@Override
 	public void focusGained(FocusEvent event)
