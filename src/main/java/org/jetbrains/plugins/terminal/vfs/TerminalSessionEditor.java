@@ -16,7 +16,6 @@
 package org.jetbrains.plugins.terminal.vfs;
 
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -42,6 +41,7 @@ import com.jediterm.terminal.TtyConnectorWaitFor;
 import com.jediterm.terminal.ui.TerminalAction;
 import com.jediterm.terminal.ui.TerminalActionProviderBase;
 import com.jediterm.terminal.ui.settings.TabbedSettingsProvider;
+import kava.beans.PropertyChangeListener;
 
 /**
  * @author traff
