@@ -19,10 +19,10 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
@@ -48,12 +48,11 @@ import kava.beans.PropertyChangeListener;
  */
 public class TerminalSessionEditor extends UserDataHolderBase implements FileEditor
 {
-
 	private Project myProject;
 	private final TerminalSessionVirtualFileImpl myFile;
 	private final TtyConnectorWaitFor myWaitFor;
 
-	public TerminalSessionEditor(Project project, @NotNull TerminalSessionVirtualFileImpl terminalFile)
+	public TerminalSessionEditor(Project project, @Nonnull TerminalSessionVirtualFileImpl terminalFile)
 	{
 		myProject = project;
 		myFile = terminalFile;
@@ -105,7 +104,7 @@ public class TerminalSessionEditor extends UserDataHolderBase implements FileEdi
 		myFile.getTerminal().close();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public JComponent getComponent()
 	{
@@ -119,22 +118,22 @@ public class TerminalSessionEditor extends UserDataHolderBase implements FileEdi
 		return myFile.getTerminal();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getName()
 	{
 		return myFile.getName();
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public FileEditorState getState(@NotNull FileEditorStateLevel level)
+	public FileEditorState getState(@Nonnull FileEditorStateLevel level)
 	{
 		return FileEditorState.INSTANCE;
 	}
 
 	@Override
-	public void setState(@NotNull FileEditorState state)
+	public void setState(@Nonnull FileEditorState state)
 	{
 
 	}
@@ -164,13 +163,13 @@ public class TerminalSessionEditor extends UserDataHolderBase implements FileEdi
 	}
 
 	@Override
-	public void addPropertyChangeListener(@NotNull PropertyChangeListener listener)
+	public void addPropertyChangeListener(@Nonnull PropertyChangeListener listener)
 	{
 
 	}
 
 	@Override
-	public void removePropertyChangeListener(@NotNull PropertyChangeListener listener)
+	public void removePropertyChangeListener(@Nonnull PropertyChangeListener listener)
 	{
 
 	}

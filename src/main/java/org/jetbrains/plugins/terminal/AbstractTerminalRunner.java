@@ -4,10 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.concurrent.ExecutionException;
 
+import javax.annotation.Nonnull;
 import javax.swing.JPanel;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.Executor;
@@ -42,10 +42,10 @@ import com.jediterm.terminal.ui.TerminalWidget;
 public abstract class AbstractTerminalRunner<T extends Process>
 {
 	private static final Logger LOG = Logger.getInstance(AbstractTerminalRunner.class.getName());
-	@NotNull
+	@Nonnull
 	protected final Project myProject;
 
-	public AbstractTerminalRunner(@NotNull Project project)
+	public AbstractTerminalRunner(@Nonnull Project project)
 	{
 		myProject = project;
 	}
@@ -54,7 +54,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 	{
 		ProgressManager.getInstance().run(new Task.Backgroundable(myProject, "Running the terminal", false)
 		{
-			public void run(@NotNull final ProgressIndicator indicator)
+			public void run(@Nonnull final ProgressIndicator indicator)
 			{
 				indicator.setText("Running the terminal...");
 				try
@@ -106,8 +106,8 @@ public abstract class AbstractTerminalRunner<T extends Process>
 
 	protected abstract ProcessHandler createProcessHandler(T process);
 
-	@NotNull
-	public JBTabbedTerminalWidget createTerminalWidget(@NotNull Disposable parent)
+	@Nonnull
+	public JBTabbedTerminalWidget createTerminalWidget(@Nonnull Disposable parent)
 	{
 		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
 		JBTabbedTerminalWidget terminalWidget = new JBTabbedTerminalWidget(myProject, provider,
@@ -168,12 +168,12 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		processHandler.startNotify();
 	}
 
-	public void openSession(@NotNull TerminalWidget terminal)
+	public void openSession(@Nonnull TerminalWidget terminal)
 	{
 		openSessionInDirectory(terminal, null);
 	}
 
-	public static void createAndStartSession(@NotNull TerminalWidget terminal, @NotNull TtyConnector ttyConnector)
+	public static void createAndStartSession(@Nonnull TerminalWidget terminal, @Nonnull TtyConnector ttyConnector)
 	{
 		TerminalSession session = terminal.createTerminalSession(ttyConnector);
 		session.start();
@@ -189,7 +189,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 	}
 
 	protected void showConsole(Executor defaultExecutor,
-			@NotNull RunContentDescriptor myDescriptor,
+			@Nonnull RunContentDescriptor myDescriptor,
 			final Component toFocus)
 	{
 		// Show in run toolwindow
@@ -206,7 +206,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		});
 	}
 
-	@NotNull
+	@Nonnull
 	protected Project getProject()
 	{
 		return myProject;
@@ -215,7 +215,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 	public abstract String runningTargetName();
 
 
-	public void openSessionInDirectory(@NotNull TerminalWidget terminalWidget, @Nullable String directory)
+	public void openSessionInDirectory(@Nonnull TerminalWidget terminalWidget, @Nullable String directory)
 	{
 		// Create Server process
 		try

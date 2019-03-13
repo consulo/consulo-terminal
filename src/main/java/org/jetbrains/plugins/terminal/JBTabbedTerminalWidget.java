@@ -11,13 +11,13 @@ import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.annotation.Nonnull;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
 import com.google.common.base.Predicate;
 import com.intellij.ide.dnd.DnDDropHandler;
@@ -67,10 +67,10 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 	private final JBTerminalSystemSettingsProvider mySettingsProvider;
 	private Disposable myParent;
 
-	public JBTabbedTerminalWidget(@NotNull Project project,
-			@NotNull JBTerminalSystemSettingsProvider settingsProvider,
-			final @NotNull Predicate<Pair<TerminalWidget, String>> createNewSessionAction,
-			@NotNull Disposable parent)
+	public JBTabbedTerminalWidget(@Nonnull Project project,
+			@Nonnull JBTerminalSystemSettingsProvider settingsProvider,
+			final @Nonnull Predicate<Pair<TerminalWidget, String>> createNewSessionAction,
+			@Nonnull Disposable parent)
 	{
 		super(settingsProvider, new Predicate<TerminalWidget>()
 		{
@@ -117,13 +117,13 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 		).install();
 	}
 
-	public static void convertActions(@NotNull JComponent component, @NotNull List<TerminalAction> actions)
+	public static void convertActions(@Nonnull JComponent component, @Nonnull List<TerminalAction> actions)
 	{
 		convertActions(component, actions, null);
 	}
 
-	public static void convertActions(@NotNull JComponent component,
-			@NotNull List<TerminalAction> actions,
+	public static void convertActions(@Nonnull JComponent component,
+			@Nonnull List<TerminalAction> actions,
 			@Nullable final Predicate<KeyEvent> elseAction)
 	{
 		for(final TerminalAction action : actions)
@@ -168,7 +168,7 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 		private final CopyOnWriteArraySet<TabChangeListener> myListeners = new
 				CopyOnWriteArraySet<TabChangeListener>();
 
-		public JBTerminalTabs(@NotNull Project project, @NotNull Disposable parent)
+		public JBTerminalTabs(@Nonnull Project project, @Nonnull Disposable parent)
 		{
 			final ActionManager actionManager = ActionManager.getInstance();
 			myTabs = new JBEditorTabs(project, actionManager, IdeFocusManager.getInstance(project), parent)

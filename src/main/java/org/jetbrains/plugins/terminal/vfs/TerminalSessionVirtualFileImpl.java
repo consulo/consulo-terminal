@@ -19,7 +19,7 @@
  */
 package org.jetbrains.plugins.terminal.vfs;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.tabs.TabInfo;
 import com.jediterm.terminal.ui.JediTermWidget;
@@ -35,9 +35,9 @@ public class TerminalSessionVirtualFileImpl extends LightVirtualFile
 
 	private final TabInfo myTabInfo;
 
-	public TerminalSessionVirtualFileImpl(@NotNull TabInfo tabInfo,
-			@NotNull JediTermWidget terminal,
-			@NotNull TabbedSettingsProvider settingsProvider)
+	public TerminalSessionVirtualFileImpl(@Nonnull TabInfo tabInfo,
+			@Nonnull JediTermWidget terminal,
+			@Nonnull TabbedSettingsProvider settingsProvider)
 	{
 		myTabInfo = tabInfo;
 		myTerminal = terminal;
@@ -51,7 +51,7 @@ public class TerminalSessionVirtualFileImpl extends LightVirtualFile
 		return myTerminal;
 	}
 
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return myTabInfo.getText();

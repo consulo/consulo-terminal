@@ -39,7 +39,7 @@ import java.util.List;
 import javax.swing.KeyStroke;
 
 import org.intellij.lang.annotations.JdkConstants;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.intellij.ide.GeneralSettings;
@@ -103,9 +103,9 @@ public class JBTerminalPanel extends TerminalPanel implements FocusListener, Ter
 
 	private List<AnAction> myActionsToSkip;
 
-	public JBTerminalPanel(@NotNull JBTerminalSystemSettingsProvider settingsProvider,
-			@NotNull TerminalTextBuffer backBuffer,
-			@NotNull StyleState styleState)
+	public JBTerminalPanel(@Nonnull JBTerminalSystemSettingsProvider settingsProvider,
+			@Nonnull TerminalTextBuffer backBuffer,
+			@Nonnull StyleState styleState)
 	{
 		super(settingsProvider, backBuffer, styleState);
 

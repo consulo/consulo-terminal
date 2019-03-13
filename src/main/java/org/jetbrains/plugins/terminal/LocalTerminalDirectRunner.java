@@ -23,8 +23,9 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.intellij.execution.TaskExecutor;
 import com.intellij.execution.process.BaseOSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
@@ -92,7 +93,7 @@ public class LocalTerminalDirectRunner extends AbstractTerminalRunner<PtyProcess
 		return null;
 	}
 
-	@NotNull
+	@Nonnull
 	public static LocalTerminalDirectRunner createTerminalRunner(Project project)
 	{
 		return new LocalTerminalDirectRunner(project);

@@ -15,7 +15,8 @@
  */
 package org.jetbrains.plugins.terminal.vfs;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.fileTypes.ex.FakeFileType;
 import com.intellij.openapi.vfs.VirtualFile;
 
@@ -27,13 +28,13 @@ public class TerminalSessionFileType extends FakeFileType
 
 	public final static TerminalSessionFileType INSTANCE = new TerminalSessionFileType();
 
-	@NotNull
+	@Nonnull
 	public String getName()
 	{
 		return "Terminal Session";
 	}
 
-	@NotNull
+	@Nonnull
 	public String getDescription()
 	{
 		return getName() + " Fake File Type";

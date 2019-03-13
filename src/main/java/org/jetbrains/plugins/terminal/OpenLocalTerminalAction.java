@@ -1,6 +1,7 @@
 package org.jetbrains.plugins.terminal;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
+
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -55,7 +56,7 @@ public class OpenLocalTerminalAction extends AnAction implements DumbAware
 		}, true);
 	}
 
-	@NotNull
+	@Nonnull
 	public static LocalTerminalDirectRunner createTerminalRunner(Project project)
 	{
 		return new LocalTerminalDirectRunner(project);

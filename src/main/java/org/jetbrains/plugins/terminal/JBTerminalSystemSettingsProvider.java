@@ -24,11 +24,11 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.KeyStroke;
 
 import org.jdom.Element;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 import com.google.common.collect.Sets;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.ui.UISettings;
@@ -290,7 +290,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		return TerminalOptionsProvider.getInstance().pasteOnMiddleMouseButton();
 	}
 
-	@NotNull
+	@Nonnull
 	private static MyColorSchemeDelegate createBoundColorSchemeDelegate(@Nullable final EditorColorsScheme
 			customGlobalScheme)
 	{
@@ -332,7 +332,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 			return myGlobalScheme;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public String getName()
 		{
@@ -388,7 +388,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 			myOwnAttributes.put(key, attributes);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public Color getDefaultBackground()
 		{
@@ -396,7 +396,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 			return color != null ? color : getGlobal().getDefaultBackground();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public Color getDefaultForeground()
 		{
@@ -427,7 +427,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 			
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public FontPreferences getFontPreferences()
 		{
@@ -435,7 +435,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		}
 
 		@Override
-		public void setFontPreferences(@NotNull FontPreferences preferences)
+		public void setFontPreferences(@Nonnull FontPreferences preferences)
 		{
 			throw new IllegalStateException();
 		}
@@ -465,7 +465,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		}
 
 		@Override
-		public void setQuickDocFontSize(@NotNull FontSize fontSize)
+		public void setQuickDocFontSize(@Nonnull FontSize fontSize)
 		{
 			myGlobalScheme.setQuickDocFontSize(fontSize);
 		}
@@ -536,7 +536,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 			myGlobalScheme = scheme == null ? EditorColorsManager.getInstance().getGlobalScheme() : scheme;
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
 		public FontPreferences getConsoleFontPreferences()
 		{
@@ -544,7 +544,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		}
 
 		@Override
-		public void setConsoleFontPreferences(@NotNull FontPreferences preferences)
+		public void setConsoleFontPreferences(@Nonnull FontPreferences preferences)
 		{
 			preferences.copyTo(myFontPreferences);
 			initFonts();

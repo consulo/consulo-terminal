@@ -4,12 +4,12 @@ import java.awt.Image;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.swing.JComponent;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import javax.annotation.Nullable;
 import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.EventLog;
@@ -59,7 +59,7 @@ public class TerminalView
 		myProject = project;
 	}
 
-	public static TerminalView getInstance(@NotNull Project project)
+	public static TerminalView getInstance(@Nonnull Project project)
 	{
 		return project.getComponent(TerminalView.class);
 	}
@@ -80,7 +80,7 @@ public class TerminalView
 																												  ToolWindowManagerListener()
 			{
 				@Override
-				public void toolWindowRegistered(@NotNull String id)
+				public void toolWindowRegistered(@Nonnull String id)
 				{
 				}
 
@@ -124,12 +124,12 @@ public class TerminalView
 	}
 
 	private Content createTerminalInContentPanel(@Nullable LocalTerminalDirectRunner terminalRunner,
-			final @NotNull ToolWindow toolWindow)
+			final @Nonnull ToolWindow toolWindow)
 	{
 		SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true)
 		{
 			@Override
-			public Object getData(@NotNull Key<?> dataId)
+			public Object getData(@Nonnull Key<?> dataId)
 			{
 				return PlatformDataKeys.HELP_ID == dataId ? EventLog.HELP_ID : super.getData(dataId);
 			}
@@ -205,7 +205,7 @@ public class TerminalView
 		openSession(terminal, terminalRunner);
 	}
 
-	private void openSession(@NotNull ToolWindow toolWindow, @NotNull AbstractTerminalRunner terminalRunner)
+	private void openSession(@Nonnull ToolWindow toolWindow, @Nonnull AbstractTerminalRunner terminalRunner)
 	{
 		if(myTerminalWidget == null)
 		{
@@ -229,8 +229,8 @@ public class TerminalView
 	}
 
 	private ActionToolbar createToolbar(@Nullable final LocalTerminalDirectRunner terminalRunner,
-			@NotNull final JBTabbedTerminalWidget terminal,
-			@NotNull ToolWindow toolWindow)
+			@Nonnull final JBTabbedTerminalWidget terminal,
+			@Nonnull ToolWindow toolWindow)
 	{
 		DefaultActionGroup group = new DefaultActionGroup();
 
@@ -257,8 +257,8 @@ public class TerminalView
 		}, true);
 	}
 
-	private static void hideIfNoActiveSessions(@NotNull final ToolWindow toolWindow,
-			@NotNull JBTabbedTerminalWidget terminal)
+	private static void hideIfNoActiveSessions(@Nonnull final ToolWindow toolWindow,
+			@Nonnull JBTabbedTerminalWidget terminal)
 	{
 		if(terminal.isNoActiveSessions())
 		{
@@ -272,7 +272,7 @@ public class TerminalView
 		private final LocalTerminalDirectRunner myTerminalRunner;
 		private final TerminalWidget myTerminal;
 
-		public NewSession(@NotNull LocalTerminalDirectRunner terminalRunner, @NotNull TerminalWidget terminal)
+		public NewSession(@Nonnull LocalTerminalDirectRunner terminalRunner, @Nonnull TerminalWidget terminal)
 		{
 			super("New Session", "Create New Terminal Session", AllIcons.General.Add);
 			myTerminalRunner = terminalRunner;
@@ -291,7 +291,7 @@ public class TerminalView
 		private final JBTabbedTerminalWidget myTerminal;
 		private ToolWindow myToolWindow;
 
-		public CloseSession(@NotNull JBTabbedTerminalWidget terminal, @NotNull ToolWindow toolWindow)
+		public CloseSession(@Nonnull JBTabbedTerminalWidget terminal, @Nonnull ToolWindow toolWindow)
 		{
 			super("Close Session", "Close Terminal Session", AllIcons.Actions.Delete);
 			myTerminal = terminal;
@@ -331,9 +331,9 @@ public class TerminalView
 			return getAcceptArea();
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		public ContentResponse getContentResponse(@NotNull DockableContent content, RelativePoint point)
+		public ContentResponse getContentResponse(@Nonnull DockableContent content, RelativePoint point)
 		{
 			return isTerminalSessionContent(content) ? ContentResponse.ACCEPT_MOVE : ContentResponse.DENY;
 		}
@@ -345,7 +345,7 @@ public class TerminalView
 		}
 
 		@Override
-		public void add(@NotNull DockableContent content, RelativePoint dropTarget)
+		public void add(@Nonnull DockableContent content, RelativePoint dropTarget)
 		{
 			if(isTerminalSessionContent(content))
 			{
@@ -380,20 +380,20 @@ public class TerminalView
 
 		@Nullable
 		@Override
-		public Image startDropOver(@NotNull DockableContent content, RelativePoint point)
+		public Image startDropOver(@Nonnull DockableContent content, RelativePoint point)
 		{
 			return null;
 		}
 
 		@Nullable
 		@Override
-		public Image processDropOver(@NotNull DockableContent content, RelativePoint point)
+		public Image processDropOver(@Nonnull DockableContent content, RelativePoint point)
 		{
 			return null;
 		}
 
 		@Override
-		public void resetDropOver(@NotNull DockableContent content)
+		public void resetDropOver(@Nonnull DockableContent content)
 		{
 
 		}

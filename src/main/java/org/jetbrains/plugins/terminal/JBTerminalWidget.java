@@ -4,7 +4,7 @@ import java.awt.Graphics;
 
 import javax.swing.JScrollBar;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.impl.IdeBackgroundUtil;
@@ -29,9 +29,9 @@ public class JBTerminalWidget extends JediTermWidget implements Disposable
 	}
 
 	@Override
-	protected JBTerminalPanel createTerminalPanel(@NotNull SettingsProvider settingsProvider,
-			@NotNull StyleState styleState,
-			@NotNull TerminalTextBuffer textBuffer)
+	protected JBTerminalPanel createTerminalPanel(@Nonnull SettingsProvider settingsProvider,
+			@Nonnull StyleState styleState,
+			@Nonnull TerminalTextBuffer textBuffer)
 	{
 		JBTerminalPanel panel = new JBTerminalPanel((JBTerminalSystemSettingsProvider) settingsProvider, textBuffer,
 				styleState);

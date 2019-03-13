@@ -18,7 +18,7 @@ package org.jetbrains.plugins.terminal;
 import javax.swing.JComponent;
 
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -44,7 +44,7 @@ public class TerminalOptionsConfigurable implements SearchableConfigurable, Conf
 		myProject = project;
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public String getId()
 	{

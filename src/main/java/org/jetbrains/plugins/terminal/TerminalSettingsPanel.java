@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -42,7 +42,7 @@ public class TerminalSettingsPanel
 	private JBCheckBox myOverrideIdeShortcuts;
 	private TerminalOptionsProvider myOptionsProvider;
 
-	public JComponent createPanel(@NotNull TerminalOptionsProvider provider)
+	public JComponent createPanel(@Nonnull TerminalOptionsProvider provider)
 	{
 		myOptionsProvider = provider;
 
