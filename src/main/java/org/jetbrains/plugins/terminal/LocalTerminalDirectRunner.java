@@ -15,19 +15,7 @@
  */
 package org.jetbrains.plugins.terminal;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.intellij.execution.TaskExecutor;
-import com.intellij.execution.process.BaseOSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
@@ -41,11 +29,22 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Consumer;
+import com.intellij.util.concurrency.AppExecutorUtil;
 import com.intellij.util.containers.HashMap;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TtyConnector;
 import com.pty4j.PtyProcess;
 import com.pty4j.util.PtyUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @author traff
@@ -267,19 +266,7 @@ public class LocalTerminalDirectRunner extends AbstractTerminalRunner<PtyProcess
 		@Override
 		public Future<?> executeTask(Runnable task)
 		{
-			return executeOnPooledThread(task);
-		}
-
-		protected static Future<?> executeOnPooledThread(Runnable task)
-		{
-			final Application application = ApplicationManager.getApplication();
-
-			if(application != null)
-			{
-				return application.executeOnPooledThread(task);
-			}
-
-			return BaseOSProcessHandler.ExecutorServiceHolder.submit(task);
+			return AppExecutorUtil.getAppExecutorService().submit(task);
 		}
 	}
 }
