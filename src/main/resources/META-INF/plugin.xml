@@ -1,4 +1,4 @@
-<idea-plugin>
+<consulo-plugin>
 	<id>org.jetbrains.plugins.terminal</id>
 	<name>Terminal</name>
 	<version>SNAPSHOT</version>
@@ -25,4 +25,4 @@
 
 		<applicationService serviceImplementation="org.jetbrains.plugins.terminal.TerminalOptionsProvider" />
 	</extensions>
-</idea-plugin>
+</consulo-plugin>

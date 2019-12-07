@@ -15,14 +15,6 @@
  */
 package org.jetbrains.plugins.terminal.vfs;
 
-import java.awt.event.KeyEvent;
-import java.util.List;
-import java.util.concurrent.Executors;
-
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-
-import javax.annotation.Nullable;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
@@ -35,13 +27,20 @@ import com.intellij.openapi.fileEditor.FileEditorStateLevel;
 import com.intellij.openapi.fileEditor.ex.FileEditorManagerEx;
 import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.UserDataHolderBase;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.jediterm.terminal.TtyConnectorWaitFor;
 import com.jediterm.terminal.ui.TerminalAction;
 import com.jediterm.terminal.ui.TerminalActionProviderBase;
 import com.jediterm.terminal.ui.settings.TabbedSettingsProvider;
+import consulo.util.dataholder.UserDataHolderBase;
 import kava.beans.PropertyChangeListener;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 /**
  * @author traff

@@ -1,30 +1,13 @@
 package org.jetbrains.plugins.terminal;
 
-import java.awt.Image;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import javax.swing.JComponent;
-
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
 import com.intellij.icons.AllIcons;
 import com.intellij.notification.EventLog;
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.ex.ToolWindowManagerEx;
@@ -40,6 +23,17 @@ import com.intellij.util.ui.UIUtil;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.TabbedTerminalWidget;
 import com.jediterm.terminal.ui.TerminalWidget;
+import consulo.util.dataholder.Key;
+import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * @author traff
