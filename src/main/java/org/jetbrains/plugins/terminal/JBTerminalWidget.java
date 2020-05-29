@@ -1,13 +1,8 @@
 package org.jetbrains.plugins.terminal;
 
-import java.awt.Graphics;
-
-import javax.swing.JScrollBar;
-
 import javax.annotation.Nonnull;
-import com.intellij.openapi.Disposable;
-import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.wm.impl.IdeBackgroundUtil;
+import javax.swing.*;
+
 import com.intellij.ui.components.JBScrollBar;
 import com.jediterm.terminal.TerminalStarter;
 import com.jediterm.terminal.TtyConnector;
@@ -16,6 +11,8 @@ import com.jediterm.terminal.model.StyleState;
 import com.jediterm.terminal.model.TerminalTextBuffer;
 import com.jediterm.terminal.ui.JediTermWidget;
 import com.jediterm.terminal.ui.settings.SettingsProvider;
+import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
 
 public class JBTerminalWidget extends JediTermWidget implements Disposable
 {
@@ -30,19 +27,12 @@ public class JBTerminalWidget extends JediTermWidget implements Disposable
 
 	@Override
 	protected JBTerminalPanel createTerminalPanel(@Nonnull SettingsProvider settingsProvider,
-			@Nonnull StyleState styleState,
-			@Nonnull TerminalTextBuffer textBuffer)
+												  @Nonnull StyleState styleState,
+												  @Nonnull TerminalTextBuffer textBuffer)
 	{
-		JBTerminalPanel panel = new JBTerminalPanel((JBTerminalSystemSettingsProvider) settingsProvider, textBuffer,
-				styleState);
+		JBTerminalPanel panel = new JBTerminalPanel((JBTerminalSystemSettingsProvider) settingsProvider, textBuffer, styleState);
 		Disposer.register(this, panel);
 		return panel;
-	}
-
-	@Override
-	public void paint(Graphics g)
-	{
-		super.paint(IdeBackgroundUtil.withEditorBackground(g, this));
 	}
 
 	@Override

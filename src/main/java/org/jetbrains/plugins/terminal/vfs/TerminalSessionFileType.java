@@ -25,7 +25,6 @@ import com.intellij.openapi.vfs.VirtualFile;
  */
 public class TerminalSessionFileType extends FakeFileType
 {
-
 	public final static TerminalSessionFileType INSTANCE = new TerminalSessionFileType();
 
 	@Nonnull
