@@ -15,33 +15,29 @@
  */
 package org.jetbrains.plugins.terminal;
 
-import javax.swing.JComponent;
+import javax.annotation.Nonnull;
+import javax.swing.*;
 
 import org.jetbrains.annotations.Nls;
-import javax.annotation.Nonnull;
-import com.intellij.openapi.Disposable;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Disposer;
 
 /**
  * @author traff
  */
-public class TerminalOptionsConfigurable implements SearchableConfigurable, Configurable.NoScroll, Disposable
+public class TerminalOptionsConfigurable implements SearchableConfigurable, Configurable.NoScroll
 {
 	public static final String TERMINAL_SETTINGS_HELP_REFERENCE = "reference.settings.terminal";
 
 	private TerminalSettingsPanel myPanel;
 
 	private final TerminalOptionsProvider myOptionsProvider;
-	private Project myProject;
 
 	public TerminalOptionsConfigurable(Project project)
 	{
 		myOptionsProvider = TerminalOptionsProvider.getInstance();
-		myProject = project;
 	}
 
 	@Nonnull
@@ -91,7 +87,6 @@ public class TerminalOptionsConfigurable implements SearchableConfigurable, Conf
 		myPanel.apply();
 	}
 
-
 	@Override
 	public void reset()
 	{
@@ -100,12 +95,6 @@ public class TerminalOptionsConfigurable implements SearchableConfigurable, Conf
 
 	@Override
 	public void disposeUIResources()
-	{
-		Disposer.dispose(this);
-	}
-
-	@Override
-	public void dispose()
 	{
 		myPanel = null;
 	}
