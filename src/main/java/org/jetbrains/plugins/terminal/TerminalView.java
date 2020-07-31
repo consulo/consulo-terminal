@@ -1,13 +1,5 @@
 package org.jetbrains.plugins.terminal;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
@@ -18,6 +10,13 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.util.text.UniqueNameGenerator;
 import consulo.util.lang.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author traff
@@ -42,7 +41,7 @@ public class TerminalView
 	{
 		toolWindow.setToHideOnEmptyContent(true);
 
-		toolWindow.setTabActions(DumbAwareAction.create("Add Terminal", AllIcons.ToolbarDecorator.Add, event -> addNewSession(toolWindow)));
+		toolWindow.setTabActions(DumbAwareAction.create("Add Terminal", AllIcons.General.Add, event -> addNewSession(toolWindow)));
 
 		toolWindow.setTabDoubleClickActions(DumbAwareAction.create("Rename tab", null, event -> {
 			ContentManager contentManager = toolWindow.getContentManager();
