@@ -6,7 +6,7 @@
 	<description>Embedded Terminal</description>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<toolWindow id="Terminal" anchor="bottom" icon="TerminalIcons.OpenTerminal_13x13" factoryClass="org.jetbrains.plugins.terminal.TerminalToolWindowFactory" secondary="false" canCloseContents="true"/>
+		<toolWindow id="Terminal" anchor="bottom" icon="consulo.terminal.TerminalIconGroup@openterminal_13x13" factoryClass="org.jetbrains.plugins.terminal.TerminalToolWindowFactory" secondary="false" canCloseContents="true"/>
 
 		<projectConfigurable instance="org.jetbrains.plugins.terminal.TerminalOptionsConfigurable"/>
 
