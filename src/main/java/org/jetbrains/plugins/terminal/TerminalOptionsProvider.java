@@ -17,7 +17,7 @@ package org.jetbrains.plugins.terminal;
 
 import java.io.File;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
