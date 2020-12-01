@@ -15,35 +15,13 @@
  */
 package org.jetbrains.plugins.terminal;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.swing.KeyStroke;
-
-import org.jdom.Element;
-
 import com.google.common.collect.Sets;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.ui.UISettings;
 import com.intellij.ide.ui.UISettingsListener;
 import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.actionSystem.Shortcut;
-import com.intellij.openapi.editor.colors.ColorKey;
-import com.intellij.openapi.editor.colors.EditorColors;
-import com.intellij.openapi.editor.colors.EditorColorsAdapter;
-import com.intellij.openapi.editor.colors.EditorColorsManager;
-import com.intellij.openapi.editor.colors.EditorColorsScheme;
-import com.intellij.openapi.editor.colors.EditorFontType;
-import com.intellij.openapi.editor.colors.FontPreferences;
-import com.intellij.openapi.editor.colors.ModifiableFontPreferences;
-import com.intellij.openapi.editor.colors.TextAttributesKey;
+import com.intellij.openapi.editor.colors.*;
 import com.intellij.openapi.editor.colors.impl.FontPreferencesImpl;
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -57,7 +35,17 @@ import com.jediterm.terminal.TextStyle;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.emulator.ColorPalette;
 import com.jediterm.terminal.ui.settings.DefaultTabbedSettingsProvider;
+import consulo.awt.TargetAWT;
 import consulo.disposer.Disposable;
+import consulo.ui.color.ColorValue;
+import org.jdom.Element;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+import java.util.*;
 
 /**
  * @author traff
@@ -186,15 +174,15 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 	@Override
 	public TextStyle getSelectionColor()
 	{
-		return new TextStyle(TerminalColor.awt(myColorScheme.getColor(EditorColors.SELECTION_FOREGROUND_COLOR)),
-				TerminalColor.awt(myColorScheme.getColor(EditorColors.SELECTION_BACKGROUND_COLOR)));
+		return new TextStyle(TerminalColor.awt(TargetAWT.to(myColorScheme.getColor(EditorColors.SELECTION_FOREGROUND_COLOR))),
+				TerminalColor.awt(TargetAWT.to(myColorScheme.getColor(EditorColors.SELECTION_BACKGROUND_COLOR))));
 	}
 
 	@Override
 	public TextStyle getDefaultStyle()
 	{
-		return new TextStyle(TerminalColor.awt(myColorScheme.getDefaultForeground()),
-				TerminalColor.awt(myColorScheme.getDefaultBackground()));
+		return new TextStyle(TerminalColor.awt(TargetAWT.to(myColorScheme.getDefaultForeground())),
+				TerminalColor.awt(TargetAWT.to(myColorScheme.getDefaultBackground())));
 	}
 
 	@Override
@@ -314,7 +302,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		private final ModifiableFontPreferences myFontPreferences = new FontPreferencesImpl();
 		private final HashMap<TextAttributesKey, TextAttributes> myOwnAttributes = new HashMap<TextAttributesKey,
 				TextAttributes>();
-		private final HashMap<ColorKey, Color> myOwnColors = new HashMap<ColorKey, Color>();
+		private final HashMap<EditorColorKey, ColorValue> myOwnColors = new HashMap<EditorColorKey, ColorValue>();
 		private Map<EditorFontType, Font> myFontsMap = null;
 		private String myFaceName = null;
 		private EditorColorsScheme myGlobalScheme;
@@ -390,23 +378,23 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 
 		@Nonnull
 		@Override
-		public Color getDefaultBackground()
+		public ColorValue getDefaultBackground()
 		{
-			Color color = getGlobal().getColor(ConsoleViewContentType.CONSOLE_BACKGROUND_KEY);
+			ColorValue color = getGlobal().getColor(ConsoleViewContentType.CONSOLE_BACKGROUND_KEY);
 			return color != null ? color : getGlobal().getDefaultBackground();
 		}
 
 		@Nonnull
 		@Override
-		public Color getDefaultForeground()
+		public ColorValue getDefaultForeground()
 		{
-			Color foregroundColor = getGlobal().getAttributes(ConsoleViewContentType.NORMAL_OUTPUT_KEY)
+			ColorValue foregroundColor = getGlobal().getAttributes(ConsoleViewContentType.NORMAL_OUTPUT_KEY)
 					.getForegroundColor();
 			return foregroundColor != null ? foregroundColor : getGlobal().getDefaultForeground();
 		}
 
 		@Override
-		public Color getColor(ColorKey key)
+		public ColorValue getColor(EditorColorKey key)
 		{
 			if(myOwnColors.containsKey(key))
 			{
@@ -416,13 +404,13 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		}
 
 		@Override
-		public void setColor(ColorKey key, Color color)
+		public void setColor(EditorColorKey key, ColorValue color)
 		{
 			myOwnColors.put(key, color);
 		}
 
 		@Override
-		public void fillColors(Map<ColorKey, Color> map)
+		public void fillColors(Map<EditorColorKey, ColorValue> map)
 		{
 			
 		}

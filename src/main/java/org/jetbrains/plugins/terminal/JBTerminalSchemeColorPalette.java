@@ -15,11 +15,12 @@
  */
 package org.jetbrains.plugins.terminal;
 
-import java.awt.Color;
-
 import com.intellij.execution.process.ColoredOutputTypeRegistry;
 import com.intellij.openapi.editor.colors.EditorColorsScheme;
 import com.jediterm.terminal.emulator.ColorPalette;
+import consulo.awt.TargetAWT;
+
+import java.awt.*;
 
 /**
  * @author traff
@@ -41,8 +42,7 @@ public class JBTerminalSchemeColorPalette extends ColorPalette
 		Color[] result = XTERM_PALETTE.getIndexColors();
 		for(int i = 1; i < 7; i++)
 		{
-			result[i] = myColorsScheme.getAttributes(ColoredOutputTypeRegistry.getAnsiColorKey(i))
-					.getForegroundColor();
+			result[i] = TargetAWT.to(myColorsScheme.getAttributes(ColoredOutputTypeRegistry.getAnsiColorKey(i)).getForegroundColor());
 		}
 		return result;
 	}
