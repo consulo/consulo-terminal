@@ -15,12 +15,12 @@
  */
 package org.jetbrains.plugins.terminal;
 
-import com.google.common.collect.Sets;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.ide.ui.UISettings;
 import com.intellij.ide.ui.UISettingsListener;
 import com.intellij.openapi.actionSystem.KeyboardShortcut;
 import com.intellij.openapi.actionSystem.Shortcut;
+import com.intellij.openapi.application.Application;
 import com.intellij.openapi.editor.colors.*;
 import com.intellij.openapi.editor.colors.impl.FontPreferencesImpl;
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable;
@@ -28,6 +28,7 @@ import com.intellij.openapi.editor.markup.TextAttributes;
 import com.intellij.openapi.keymap.KeymapManager;
 import com.intellij.openapi.options.FontSize;
 import com.intellij.util.containers.HashMap;
+import com.intellij.util.messages.MessageBusConnection;
 import com.intellij.util.ui.JBUI;
 import com.jediterm.pty.PtyProcessTtyConnector;
 import com.jediterm.terminal.TerminalColor;
@@ -50,40 +51,37 @@ import java.util.*;
 /**
  * @author traff
  */
-public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider implements Disposable
+public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvider
 {
-	private Set<TerminalSettingsListener> myListeners = Sets.newHashSet();
+	private Set<TerminalSettingsListener> myListeners = new HashSet<>();
 
 	private final MyColorSchemeDelegate myColorScheme;
 
-	public JBTerminalSystemSettingsProvider()
+	public JBTerminalSystemSettingsProvider(Application application, Disposable parent)
 	{
 		myColorScheme = createBoundColorSchemeDelegate(null);
 
-		UISettings.getInstance().addUISettingsListener(new UISettingsListener()
+		MessageBusConnection busConnection = application.getMessageBus().connect(parent);
+		busConnection.subscribe(UISettingsListener.TOPIC, uiSettings ->
 		{
-			@Override
-			public void uiSettingsChanged(UISettings source)
+			int size;
+			if(UISettings.getInstance().PRESENTATION_MODE)
 			{
-				int size;
-				if(UISettings.getInstance().PRESENTATION_MODE)
-				{
-					size = UISettings.getInstance().PRESENTATION_MODE_FONT_SIZE;
-				}
-				else
-				{
-					size = myColorScheme.getGlobal().getConsoleFontSize();
-				}
-
-				if(myColorScheme.getConsoleFontSize() != size)
-				{
-					myColorScheme.setConsoleFontSize(size);
-					fireFontChanged();
-				}
+				size = UISettings.getInstance().PRESENTATION_MODE_FONT_SIZE;
 			}
-		}, this);
+			else
+			{
+				size = myColorScheme.getGlobal().getConsoleFontSize();
+			}
 
-		EditorColorsManager.getInstance().addEditorColorsListener(new EditorColorsAdapter()
+			if(myColorScheme.getConsoleFontSize() != size)
+			{
+				myColorScheme.setConsoleFontSize(size);
+				fireFontChanged();
+			}
+		});
+
+		busConnection.subscribe(EditorColorsManager.TOPIC, new EditorColorsAdapter()
 		{
 			@Override
 			public void globalSchemeChange(EditorColorsScheme scheme)
@@ -91,7 +89,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 				myColorScheme.updateGlobalScheme(scheme);
 				fireFontChanged();
 			}
-		}, this);
+		});
 	}
 
 	@Override
@@ -148,10 +146,11 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 
 	@Override
 	public String tabName(TtyConnector ttyConnector, String sessionName)
-	{ //for local terminal use name from settings
+	{
+		//for local terminal use name from settings
 		if(ttyConnector instanceof PtyProcessTtyConnector)
 		{
-			return TerminalOptionsProvider.getInstance().getTabName();
+			return TerminalOptionsProvider.getInstance().getTabNameOrDefault();
 		}
 		else
 		{
@@ -257,30 +256,30 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 	@Override
 	public boolean audibleBell()
 	{
-		return TerminalOptionsProvider.getInstance().audibleBell();
+		return TerminalOptionsProvider.getInstance().isSoundBell();
 	}
 
 	@Override
 	public boolean enableMouseReporting()
 	{
-		return TerminalOptionsProvider.getInstance().enableMouseReporting();
+		return TerminalOptionsProvider.getInstance().isMouseReporting();
 	}
 
 	@Override
 	public boolean copyOnSelect()
 	{
-		return TerminalOptionsProvider.getInstance().copyOnSelection();
+		return TerminalOptionsProvider.getInstance().isCopyOnSelection();
 	}
 
 	@Override
 	public boolean pasteOnMiddleMouseClick()
 	{
-		return TerminalOptionsProvider.getInstance().pasteOnMiddleMouseButton();
+		return TerminalOptionsProvider.getInstance().isPasteOnMiddleMouseButton();
 	}
 
 	@Nonnull
 	private static MyColorSchemeDelegate createBoundColorSchemeDelegate(@Nullable final EditorColorsScheme
-			customGlobalScheme)
+																				customGlobalScheme)
 	{
 		return new MyColorSchemeDelegate(customGlobalScheme);
 	}
@@ -289,12 +288,6 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 	public boolean forceActionOnMouseReporting()
 	{
 		return true;
-	}
-
-	@Override
-	public void dispose()
-	{
-
 	}
 
 	private static class MyColorSchemeDelegate implements EditorColorsScheme
@@ -412,7 +405,7 @@ public class JBTerminalSystemSettingsProvider extends DefaultTabbedSettingsProvi
 		@Override
 		public void fillColors(Map<EditorColorKey, ColorValue> map)
 		{
-			
+
 		}
 
 		@Nonnull

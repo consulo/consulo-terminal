@@ -1,24 +1,5 @@
 package org.jetbrains.plugins.terminal;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArraySet;
-
-import javax.annotation.Nonnull;
-import javax.swing.JComponent;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-
-import javax.annotation.Nullable;
-import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
 import com.google.common.base.Predicate;
 import com.intellij.ide.dnd.DnDDropHandler;
 import com.intellij.ide.dnd.DnDEvent;
@@ -48,14 +29,19 @@ import com.intellij.ui.tabs.impl.JBTabsImpl;
 import com.intellij.ui.tabs.impl.TabLabel;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
-import com.jediterm.terminal.ui.JediTermWidget;
-import com.jediterm.terminal.ui.TabbedTerminalWidget;
-import com.jediterm.terminal.ui.TerminalAction;
-import com.jediterm.terminal.ui.TerminalTabs;
-import com.jediterm.terminal.ui.TerminalWidget;
+import com.jediterm.terminal.ui.*;
 import com.jediterm.terminal.ui.settings.TabbedSettingsProvider;
 import consulo.disposer.Disposable;
 import consulo.disposer.Disposer;
+import org.jetbrains.plugins.terminal.vfs.TerminalSessionVirtualFileImpl;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * @author traff
@@ -72,14 +58,7 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 			final @Nonnull Predicate<Pair<TerminalWidget, String>> createNewSessionAction,
 			@Nonnull Disposable parent)
 	{
-		super(settingsProvider, new Predicate<TerminalWidget>()
-		{
-			@Override
-			public boolean apply(TerminalWidget input)
-			{
-				return createNewSessionAction.apply(Pair.<TerminalWidget, String>create(input, null));
-			}
-		});
+		super(settingsProvider, input -> createNewSessionAction.apply(Pair.<TerminalWidget, String>create(input, null)));
 		myProject = project;
 
 		mySettingsProvider = settingsProvider;
@@ -88,7 +67,6 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 		convertActions(this, getActions());
 
 		Disposer.register(parent, this);
-		Disposer.register(this, settingsProvider);
 
 		DnDSupport.createBuilder(this).setDropHandler(new DnDDropHandler()
 		{
@@ -150,7 +128,7 @@ public class JBTabbedTerminalWidget extends TabbedTerminalWidget implements Disp
 	@Override
 	protected JediTermWidget createInnerTerminalWidget(TabbedSettingsProvider settingsProvider)
 	{
-		return new JBTerminalWidget(mySettingsProvider, myParent);
+		return new JBTerminalWidget(mySettingsProvider);
 	}
 
 	@Override

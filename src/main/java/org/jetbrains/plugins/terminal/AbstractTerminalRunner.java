@@ -1,32 +1,18 @@
 package org.jetbrains.plugins.terminal;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.util.concurrent.ExecutionException;
-
-import javax.annotation.Nonnull;
-import javax.swing.JPanel;
-
-import javax.annotation.Nullable;
-import com.google.common.base.Predicate;
 import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.Executor;
 import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.execution.ui.actions.CloseAction;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.wm.IdeFocusManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -34,14 +20,20 @@ import com.intellij.util.ui.UIUtil;
 import com.jediterm.terminal.TtyConnector;
 import com.jediterm.terminal.ui.TerminalSession;
 import com.jediterm.terminal.ui.TerminalWidget;
-import consulo.disposer.Disposable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.swing.*;
+import java.awt.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author traff
  */
 public abstract class AbstractTerminalRunner<T extends Process>
 {
-	private static final Logger LOG = Logger.getInstance(AbstractTerminalRunner.class.getName());
+	private static final Logger LOG = Logger.getInstance(AbstractTerminalRunner.class);
+
 	@Nonnull
 	protected final Project myProject;
 
@@ -87,14 +79,7 @@ public abstract class AbstractTerminalRunner<T extends Process>
 		{
 			final T process = createProcess(null);
 
-			UIUtil.invokeLaterIfNeeded(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					initConsoleUI(process);
-				}
-			});
+			UIUtil.invokeLaterIfNeeded(() -> initConsoleUI(process));
 		}
 		catch(Exception e)
 		{
@@ -106,35 +91,15 @@ public abstract class AbstractTerminalRunner<T extends Process>
 
 	protected abstract ProcessHandler createProcessHandler(T process);
 
-	@Nonnull
-	public JBTabbedTerminalWidget createTerminalWidget(@Nonnull Disposable parent)
-	{
-		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
-		JBTabbedTerminalWidget terminalWidget = new JBTabbedTerminalWidget(myProject, provider,
-				new Predicate<Pair<TerminalWidget, String>>()
-		{
-			@Override
-			public boolean apply(Pair<TerminalWidget, String> widget)
-			{
-				openSessionInDirectory(widget.getFirst(), widget.getSecond());
-				return true;
-			}
-		}, parent);
-		openSessionInDirectory(terminalWidget, null);
-		return terminalWidget;
-	}
-
 	private void initConsoleUI(final T process)
 	{
 		final Executor defaultExecutor = DefaultRunExecutor.getRunExecutorInstance();
 		final DefaultActionGroup toolbarActions = new DefaultActionGroup();
-		final ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN,
-				toolbarActions, false);
+		final ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false);
 
 
 		final JPanel panel = new JPanel(new BorderLayout());
 		panel.add(actionToolbar.getComponent(), BorderLayout.WEST);
-
 
 		actionToolbar.setTargetComponent(panel);
 
@@ -147,16 +112,10 @@ public abstract class AbstractTerminalRunner<T extends Process>
 
 		toolbarActions.add(createCloseAction(defaultExecutor, contentDescriptor));
 
-		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
-		TerminalWidget widget = new JBTabbedTerminalWidget(myProject, provider, new Predicate<Pair<TerminalWidget,
-				String>>()
-		{
-			@Override
-			public boolean apply(Pair<TerminalWidget, String> widget)
-			{
-				openSessionInDirectory(widget.getFirst(), widget.getSecond());
-				return true;
-			}
+		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider(myProject.getApplication(), contentDescriptor);
+		TerminalWidget widget = new JBTabbedTerminalWidget(myProject, provider, widget1 -> {
+			openSessionInDirectory(widget1.getFirst(), widget1.getSecond());
+			return true;
 		}, contentDescriptor);
 
 		createAndStartSession(widget, createTtyConnector(process));
@@ -189,21 +148,15 @@ public abstract class AbstractTerminalRunner<T extends Process>
 	}
 
 	protected void showConsole(Executor defaultExecutor,
-			@Nonnull RunContentDescriptor myDescriptor,
-			final Component toFocus)
+							   @Nonnull RunContentDescriptor myDescriptor,
+							   final Component toFocus)
 	{
 		// Show in run toolwindow
 		ExecutionManager.getInstance(myProject).getContentManager().showRunContent(defaultExecutor, myDescriptor);
 
 		// Request focus
 		final ToolWindow window = ToolWindowManager.getInstance(myProject).getToolWindow(defaultExecutor.getId());
-		window.activate(new Runnable()
-		{
-			public void run()
-			{
-				IdeFocusManager.getInstance(myProject).requestFocus(toFocus, true);
-			}
-		});
+		window.activate(() -> IdeFocusManager.getInstance(myProject).requestFocus(toFocus, true));
 	}
 
 	@Nonnull

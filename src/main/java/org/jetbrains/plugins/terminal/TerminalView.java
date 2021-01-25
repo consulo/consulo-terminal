@@ -9,12 +9,13 @@ import com.intellij.openapi.wm.ex.ToolWindowEx;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.util.text.UniqueNameGenerator;
+import consulo.disposer.Disposable;
+import consulo.disposer.Disposer;
 import consulo.util.lang.StringUtil;
-
-import javax.annotation.Nonnull;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,13 +71,15 @@ public class TerminalView
 	{
 		LocalTerminalDirectRunner terminalRunner = new LocalTerminalDirectRunner(myProject);
 
-		consulo.disposer.Disposable widgetDisposable = consulo.disposer.Disposable.newDisposable();
-
 		ContentManager contentManager = toolWindow.getContentManager();
 
-		final JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider();
+		Disposable parentDisposable = Disposable.newDisposable("terminal view");
 
-		JBTerminalWidget widget = new JBTerminalWidget(provider, widgetDisposable);
+		JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider(myProject.getApplication(), parentDisposable);
+
+		JBTerminalWidget widget = new JBTerminalWidget(provider);
+		Disposer.register(parentDisposable, widget);
+
 		terminalRunner.openSession(widget);
 
 		List<String> names = Arrays.stream(contentManager.getContents()).map(Content::getDisplayName).collect(Collectors.toList());
@@ -85,7 +88,7 @@ public class TerminalView
 		Content content = contentManager.getFactory().createContent(widget, uniqueName, false);
 		content.setCloseable(true);
 		content.setTabName(uniqueName);
-		content.setDisposer(widgetDisposable::dispose);
+		content.setDisposer(parentDisposable);
 
 		contentManager.addContent(content);
 		contentManager.setSelectedContent(content);

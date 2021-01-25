@@ -20,8 +20,6 @@ import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.process.ProcessWaitFor;
-import com.intellij.openapi.application.Application;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -154,7 +152,7 @@ public class LocalTerminalDirectRunner extends AbstractTerminalRunner<PtyProcess
 	public String[] getCommand()
 	{
 		String[] command;
-		String shellPath = TerminalOptionsProvider.getInstance().getShellPath();
+		String shellPath = TerminalOptionsProvider.getInstance().getShellPathOrDefault();
 
 		if(SystemInfo.isUnix)
 		{

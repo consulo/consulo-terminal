@@ -15,16 +15,17 @@
  */
 package org.jetbrains.plugins.terminal;
 
-import java.io.File;
-
+import com.intellij.openapi.components.*;
+import com.intellij.openapi.util.SystemInfo;
+import consulo.localize.LocalizeValue;
+import consulo.platform.Platform;
+import consulo.util.lang.StringUtil;
 import jakarta.inject.Singleton;
 
-import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
-import com.intellij.openapi.util.SystemInfo;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.Objects;
 
 /**
  * @author traff
@@ -64,22 +65,23 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		return myState.myCloseSessionOnLogout;
 	}
 
-	public boolean enableMouseReporting()
+	public boolean isMouseReporting()
 	{
 		return myState.myReportMouse;
 	}
 
-	public boolean audibleBell()
+	public boolean isSoundBell()
 	{
 		return myState.mySoundBell;
 	}
 
+	@Nullable
 	public String getTabName()
 	{
 		return myState.myTabName;
 	}
 
-	public boolean overrideIdeShortcuts()
+	public boolean isOverrideIdeShortcuts()
 	{
 		return myState.myOverrideIdeShortcuts;
 	}
@@ -91,8 +93,8 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 
 	public static class State
 	{
-		public String myShellPath = getDefaultShellPath();
-		public String myTabName = "Local";
+		public String myShellPath;
+		public String myTabName;
 		public boolean myCloseSessionOnLogout = true;
 		public boolean myReportMouse = true;
 		public boolean mySoundBell = true;
@@ -101,14 +103,52 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		public boolean myOverrideIdeShortcuts = true;
 	}
 
+	@Nonnull
+	public String getTabNameOrDefault()
+	{
+		String tabName = getTabName();
+		if(StringUtil.isEmptyOrSpaces(tabName))
+		{
+			return getDefaultTabName().get();
+		}
+		return tabName;
+	}
+
+	@Nonnull
+	public LocalizeValue getDefaultTabName()
+	{
+		return LocalizeValue.localizeTODO("Local");
+	}
+
+	@Nullable
 	public String getShellPath()
 	{
 		return myState.myShellPath;
 	}
 
-	private static String getDefaultShellPath()
+	@Nonnull
+	public String getShellPathOrDefault()
 	{
-		String shell = System.getenv("SHELL");
+		String defaultShellPath = getDefaultShellPath();
+
+		if(Objects.equals(getShellPath(), defaultShellPath))
+		{
+			// reset shell path if is default
+			setShellPath(null);
+		}
+
+		String shellPath = getShellPath();
+		if(StringUtil.isEmptyOrSpaces(shellPath))
+		{
+			return getDefaultShellPath();
+		}
+		return shellPath;
+	}
+
+	@Nonnull
+	public String getDefaultShellPath()
+	{
+		String shell = Platform.current().os().getEnvironmentVariable("SHELL");
 
 		if(shell != null && new File(shell).canExecute())
 		{
@@ -150,7 +190,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		myState.mySoundBell = soundBell;
 	}
 
-	public boolean copyOnSelection()
+	public boolean isCopyOnSelection()
 	{
 		return myState.myCopyOnSelection;
 	}
@@ -160,7 +200,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		myState.myCopyOnSelection = copyOnSelection;
 	}
 
-	public boolean pasteOnMiddleMouseButton()
+	public boolean isPasteOnMiddleMouseButton()
 	{
 		return myState.myPasteOnMiddleMouseButton;
 	}
