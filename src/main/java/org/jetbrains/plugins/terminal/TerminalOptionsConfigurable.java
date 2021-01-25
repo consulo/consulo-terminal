@@ -34,8 +34,6 @@ import javax.annotation.Nonnull;
  */
 public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties implements Configurable
 {
-	public static final String TERMINAL_SETTINGS_HELP_REFERENCE = "reference.settings.terminal";
-
 	private final TerminalOptionsProvider myOptionsProvider;
 	private final Project myProject;
 
@@ -98,6 +96,6 @@ public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties 
 	@Override
 	public String getHelpTopic()
 	{
-		return TERMINAL_SETTINGS_HELP_REFERENCE;
+		return "plugins/org.jetbrains.plugins.terminal/settings/";
 	}
 }
