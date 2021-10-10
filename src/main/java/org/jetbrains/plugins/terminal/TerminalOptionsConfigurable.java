@@ -18,6 +18,7 @@ package org.jetbrains.plugins.terminal;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.project.Project;
+import consulo.disposer.Disposable;
 import consulo.ide.ui.FileChooserTextBoxBuilder;
 import consulo.localize.LocalizeValue;
 import consulo.options.SimpleConfigurableByProperties;
@@ -26,6 +27,7 @@ import consulo.ui.Component;
 import consulo.ui.TextBox;
 import consulo.ui.annotation.RequiredUIAccess;
 import consulo.ui.util.FormBuilder;
+import jakarta.inject.Provider;
 
 import javax.annotation.Nonnull;
 
@@ -34,10 +36,10 @@ import javax.annotation.Nonnull;
  */
 public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties implements Configurable
 {
-	private final TerminalOptionsProvider myOptionsProvider;
+	private final Provider<TerminalOptionsProvider> myOptionsProvider;
 	private final Project myProject;
 
-	public TerminalOptionsConfigurable(Project project, TerminalOptionsProvider terminalOptionsProvider)
+	public TerminalOptionsConfigurable(Project project, Provider<TerminalOptionsProvider> terminalOptionsProvider)
 	{
 		myProject = project;
 		myOptionsProvider = terminalOptionsProvider;
@@ -46,49 +48,51 @@ public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties 
 	@RequiredUIAccess
 	@Nonnull
 	@Override
-	protected Component createLayout(PropertyBuilder propertyBuilder)
+	protected Component createLayout(@Nonnull PropertyBuilder propertyBuilder, @Nonnull Disposable uiDisposable)
 	{
 		FormBuilder builder = FormBuilder.create();
 
 		FileChooserTextBoxBuilder shellPathBuilder = FileChooserTextBoxBuilder.create(myProject);
-		shellPathBuilder.dialogTitle("Select Shell");
+		shellPathBuilder.dialogTitle(LocalizeValue.localizeTODO("Select Shell"));
 		shellPathBuilder.fileChooserDescriptor(FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
 		FileChooserTextBoxBuilder.Controller shellController = shellPathBuilder.build();
 
+		TerminalOptionsProvider terminalOptionsProvider = myOptionsProvider.get();
+
 		TextBox shellPathBox = shellController.getComponent();
-		shellPathBox.withPlaceholder(myOptionsProvider.getDefaultShellPath());
+		shellPathBox.withPlaceholder(terminalOptionsProvider.getDefaultShellPath());
 		builder.addLabeled(LocalizeValue.localizeTODO("Shell path:"), shellPathBox);
-		propertyBuilder.add(shellController::getValue, shellController::setValue, myOptionsProvider::getShellPath, myOptionsProvider::setShellPath);
+		propertyBuilder.add(shellController::getValue, shellController::setValue, terminalOptionsProvider::getShellPath, terminalOptionsProvider::setShellPath);
 
 		TextBox tabNameBox = TextBox.create();
-		tabNameBox.withPlaceholder(myOptionsProvider.getDefaultTabName().getValue());
+		tabNameBox.withPlaceholder(terminalOptionsProvider.getDefaultTabName().getValue());
 		builder.addLabeled(LocalizeValue.localizeTODO("Tab name:"), tabNameBox);
-		propertyBuilder.add(tabNameBox, myOptionsProvider::getTabName, myOptionsProvider::setTabName);
+		propertyBuilder.add(tabNameBox, terminalOptionsProvider::getTabName, terminalOptionsProvider::setTabName);
 
 		CheckBox closeSessionWhenItEnds = CheckBox.create(LocalizeValue.localizeTODO("Close session when it ends"));
 		builder.addBottom(closeSessionWhenItEnds);
-		propertyBuilder.add(closeSessionWhenItEnds, myOptionsProvider::closeSessionOnLogout, myOptionsProvider::setCloseSessionOnLogout);
+		propertyBuilder.add(closeSessionWhenItEnds, terminalOptionsProvider::closeSessionOnLogout, terminalOptionsProvider::setCloseSessionOnLogout);
 
 		CheckBox audibleBell = CheckBox.create(LocalizeValue.localizeTODO("Audible bell"));
 		builder.addBottom(audibleBell);
-		propertyBuilder.add(audibleBell, myOptionsProvider::isSoundBell, myOptionsProvider::setSoundBell);
+		propertyBuilder.add(audibleBell, terminalOptionsProvider::isSoundBell, terminalOptionsProvider::setSoundBell);
 
 		CheckBox mouseReporting = CheckBox.create(LocalizeValue.localizeTODO("Mouse reporting"));
 		builder.addBottom(mouseReporting);
-		propertyBuilder.add(mouseReporting, myOptionsProvider::isMouseReporting, myOptionsProvider::setReportMouse);
+		propertyBuilder.add(mouseReporting, terminalOptionsProvider::isMouseReporting, terminalOptionsProvider::setReportMouse);
 
 		CheckBox copyToClipboardOnSelection = CheckBox.create(LocalizeValue.localizeTODO("Copy to clipboard on selection"));
 		builder.addBottom(copyToClipboardOnSelection);
-		propertyBuilder.add(copyToClipboardOnSelection, myOptionsProvider::isCopyOnSelection, myOptionsProvider::setCopyOnSelection);
+		propertyBuilder.add(copyToClipboardOnSelection, terminalOptionsProvider::isCopyOnSelection, terminalOptionsProvider::setCopyOnSelection);
 
 		CheckBox pasteOnMiddleClick = CheckBox.create(LocalizeValue.localizeTODO("Paste on middle mouse button click"));
 		builder.addBottom(pasteOnMiddleClick);
-		propertyBuilder.add(pasteOnMiddleClick, myOptionsProvider::isPasteOnMiddleMouseButton, myOptionsProvider::setPasteOnMiddleMouseButton);
+		propertyBuilder.add(pasteOnMiddleClick, terminalOptionsProvider::isPasteOnMiddleMouseButton, terminalOptionsProvider::setPasteOnMiddleMouseButton);
 
 		CheckBox overrideIdeShortcuts = CheckBox.create(LocalizeValue.localizeTODO("Override IDE shortcuts"));
 		builder.addBottom(overrideIdeShortcuts);
-		propertyBuilder.add(overrideIdeShortcuts, myOptionsProvider::isOverrideIdeShortcuts, myOptionsProvider::setOverrideIdeShortcuts);
+		propertyBuilder.add(overrideIdeShortcuts, terminalOptionsProvider::isOverrideIdeShortcuts, terminalOptionsProvider::setOverrideIdeShortcuts);
 
 		return builder.build();
 	}
