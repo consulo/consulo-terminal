@@ -5,6 +5,10 @@
 	<vendor>JetBrains</vendor>
 	<description>Embedded Terminal</description>
 
+	<tags>
+		<tag>tools</tag>
+	</tags>
+
 	<extensions defaultExtensionNs="com.intellij">
 		<toolWindow id="Terminal" anchor="bottom" icon="consulo.terminal.TerminalIconGroup@openterminal_13x13" factoryClass="org.jetbrains.plugins.terminal.TerminalToolWindowFactory" secondary="false" canCloseContents="true"/>
 
