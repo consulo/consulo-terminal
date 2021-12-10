@@ -15,10 +15,11 @@
  */
 package org.jetbrains.plugins.terminal.vfs;
 
-import javax.annotation.Nonnull;
-
 import com.intellij.openapi.fileTypes.ex.FakeFileType;
 import com.intellij.openapi.vfs.VirtualFile;
+import consulo.localize.LocalizeValue;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author traff
@@ -28,15 +29,15 @@ public class TerminalSessionFileType extends FakeFileType
 	public final static TerminalSessionFileType INSTANCE = new TerminalSessionFileType();
 
 	@Nonnull
-	public String getName()
+	public String getId()
 	{
 		return "Terminal Session";
 	}
 
 	@Nonnull
-	public String getDescription()
+	public LocalizeValue getDescription()
 	{
-		return getName() + " Fake File Type";
+		return LocalizeValue.localizeTODO("Terminal Session Fake FileType");
 	}
 
 	public boolean isMyFileType(VirtualFile file)
