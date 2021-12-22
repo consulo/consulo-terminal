@@ -9,15 +9,23 @@
 		<tag>tools</tag>
 	</tags>
 
+	<actions>
+		<action id="Terminal.OpenInTerminal" class="org.jetbrains.plugins.terminal.action.RevealFileInTerminalAction"
+				icon="consulo.terminal.TerminalIconGroup@openterminal_13x13">
+			<add-to-group group-id="RevealGroup" anchor="last"/>
+		</action>
+	</actions>
+
 	<extensions defaultExtensionNs="com.intellij">
-		<toolWindow id="Terminal" anchor="bottom" icon="consulo.terminal.TerminalIconGroup@openterminal_13x13" factoryClass="org.jetbrains.plugins.terminal.TerminalToolWindowFactory" secondary="false" canCloseContents="true"/>
+		<toolWindow id="Terminal" anchor="bottom" icon="consulo.terminal.TerminalIconGroup@openterminal_13x13" factoryClass="org.jetbrains.plugins.terminal.TerminalToolWindowFactory" secondary="false"
+					canCloseContents="true"/>
 
 		<projectConfigurable id="terminal" parentId="execution" displayName="Terminal" instance="org.jetbrains.plugins.terminal.TerminalOptionsConfigurable"/>
 
 		<fileEditorProvider implementation="org.jetbrains.plugins.terminal.vfs.TerminalSessionEditorProvider"/>
 
-		<projectService serviceImplementation="org.jetbrains.plugins.terminal.TerminalView" lazy="false" />
+		<projectService serviceImplementation="org.jetbrains.plugins.terminal.TerminalView" lazy="false"/>
 
-		<applicationService serviceImplementation="org.jetbrains.plugins.terminal.TerminalOptionsProvider" />
+		<applicationService serviceImplementation="org.jetbrains.plugins.terminal.TerminalOptionsProvider"/>
 	</extensions>
 </consulo-plugin>
