@@ -24,7 +24,7 @@
 
 		<fileEditorProvider implementation="org.jetbrains.plugins.terminal.vfs.TerminalSessionEditorProvider"/>
 
-		<projectService serviceImplementation="org.jetbrains.plugins.terminal.TerminalView" lazy="false"/>
+		<projectService serviceImplementation="org.jetbrains.plugins.terminal.TerminalView"/>
 
 		<applicationService serviceImplementation="org.jetbrains.plugins.terminal.TerminalOptionsProvider"/>
 	</extensions>
