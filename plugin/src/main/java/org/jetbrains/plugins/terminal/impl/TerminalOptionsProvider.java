@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.terminal;
+package org.jetbrains.plugins.terminal.impl;
 
-import com.intellij.openapi.components.*;
-import com.intellij.openapi.util.SystemInfo;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
+import consulo.application.util.SystemInfo;
+import consulo.component.persist.PersistentStateComponent;
+import consulo.component.persist.State;
+import consulo.component.persist.Storage;
+import consulo.component.persist.StoragePathMacros;
+import consulo.execution.ui.terminal.TerminalConsoleSettings;
+import consulo.ide.ServiceManager;
 import consulo.localize.LocalizeValue;
 import consulo.platform.Platform;
 import consulo.util.lang.StringUtil;
@@ -32,7 +40,9 @@ import java.util.Objects;
  */
 @Singleton
 @State(name = "TerminalOptionsProvider", storages = @Storage(file = StoragePathMacros.APP_CONFIG + "/terminal.xml"))
-public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>
+@ServiceAPI(ComponentScope.APPLICATION)
+@ServiceImpl
+public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>, TerminalConsoleSettings
 {
 	private State myState = new State();
 
@@ -60,16 +70,19 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		myState.myOverrideIdeShortcuts = state.myOverrideIdeShortcuts;
 	}
 
+	@Override
 	public boolean closeSessionOnLogout()
 	{
 		return myState.myCloseSessionOnLogout;
 	}
 
+	@Override
 	public boolean isMouseReporting()
 	{
 		return myState.myReportMouse;
 	}
 
+	@Override
 	public boolean isSoundBell()
 	{
 		return myState.mySoundBell;
@@ -81,6 +94,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		return myState.myTabName;
 	}
 
+	@Override
 	public boolean isOverrideIdeShortcuts()
 	{
 		return myState.myOverrideIdeShortcuts;
@@ -103,6 +117,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		public boolean myOverrideIdeShortcuts = true;
 	}
 
+	@Override
 	@Nonnull
 	public String getTabNameOrDefault()
 	{
@@ -190,6 +205,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		myState.mySoundBell = soundBell;
 	}
 
+	@Override
 	public boolean isCopyOnSelection()
 	{
 		return myState.myCopyOnSelection;
@@ -200,6 +216,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 		myState.myCopyOnSelection = copyOnSelection;
 	}
 
+	@Override
 	public boolean isPasteOnMiddleMouseButton()
 	{
 		return myState.myPasteOnMiddleMouseButton;

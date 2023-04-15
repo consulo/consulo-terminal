@@ -13,32 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jetbrains.plugins.terminal;
+package org.jetbrains.plugins.terminal.impl;
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
-import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.project.Project;
+import consulo.annotation.component.ExtensionImpl;
+import consulo.configurable.ProjectConfigurable;
+import consulo.configurable.SimpleConfigurableByProperties;
+import consulo.configurable.StandardConfigurableIds;
 import consulo.disposer.Disposable;
-import consulo.ide.ui.FileChooserTextBoxBuilder;
+import consulo.fileChooser.FileChooserDescriptorFactory;
 import consulo.localize.LocalizeValue;
-import consulo.options.SimpleConfigurableByProperties;
+import consulo.project.Project;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.TextBox;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.FileChooserTextBoxBuilder;
 import consulo.ui.util.FormBuilder;
+import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author traff
  */
-public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties implements Configurable
+@ExtensionImpl
+public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties implements ProjectConfigurable
 {
 	private final Provider<TerminalOptionsProvider> myOptionsProvider;
 	private final Project myProject;
 
+	@Inject
 	public TerminalOptionsConfigurable(Project project, Provider<TerminalOptionsProvider> terminalOptionsProvider)
 	{
 		myProject = project;
@@ -101,5 +107,26 @@ public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties 
 	public String getHelpTopic()
 	{
 		return "plugins/org.jetbrains.plugins.terminal/settings/";
+	}
+
+	@Nonnull
+	@Override
+	public String getId()
+	{
+		return "terminal";
+	}
+
+	@Nullable
+	@Override
+	public String getParentId()
+	{
+		return StandardConfigurableIds.EXECUTION_GROUP;
+	}
+
+	@Nonnull
+	@Override
+	public String getDisplayName()
+	{
+		return "Terminal";
 	}
 }

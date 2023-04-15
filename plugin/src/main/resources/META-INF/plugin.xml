@@ -1,0 +1,11 @@
+<consulo-plugin url="https://github.com/consulo/consulo-terminal">
+	<id>org.jetbrains.plugins.terminal</id>
+	<name>Terminal</name>
+	<version>SNAPSHOT</version>
+	<vendor>JetBrains</vendor>
+	<description>Embedded Terminal</description>
+
+	<tags>
+		<tag>tools</tag>
+	</tags>
+</consulo-plugin>

@@ -19,15 +19,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>consulo</groupId>
-		<artifactId>arch.managment</artifactId>
+		<artifactId>arch.ide-api-provided</artifactId>
 		<version>3-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
 
 	<groupId>consulo.plugin</groupId>
-	<artifactId>org.jetbrains.plugins.terminal.parent</artifactId>
+	<artifactId>org.jetbrains.plugins.terminal</artifactId>
 	<version>3-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<packaging>consulo-plugin</packaging>
 
 	<repositories>
 		<repository>
@@ -40,7 +40,35 @@
 		</repository>
 	</repositories>
 
-	<modules>
-		<module>plugin</module>
-	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>consulo.maven</groupId>
+				<artifactId>maven-consulo-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<packaging>
+						<skip>${dev.mode}</skip>
+						<version>${build.number}</version>
+					</packaging>
+				</configuration>
+				<executions>
+					<execution>
+						<id>gen</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate-icon</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>pack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>workspace</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

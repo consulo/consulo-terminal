@@ -1,20 +1,26 @@
-package org.jetbrains.plugins.terminal;
+package org.jetbrains.plugins.terminal.impl;
 
-import com.intellij.icons.AllIcons;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.wm.ex.ToolWindowEx;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentManager;
-import com.intellij.util.text.UniqueNameGenerator;
+import consulo.annotation.component.ComponentScope;
+import consulo.annotation.component.ServiceAPI;
+import consulo.annotation.component.ServiceImpl;
+import consulo.application.AllIcons;
+import consulo.component.util.text.UniqueNameGenerator;
 import consulo.disposer.Disposable;
-import consulo.disposer.Disposer;
+import consulo.execution.terminal.TerminalSession;
+import consulo.execution.terminal.TerminalSessionFactory;
+import consulo.execution.ui.terminal.TerminalConsole;
+import consulo.execution.ui.terminal.TerminalConsoleFactory;
+import consulo.module.content.ProjectRootManager;
+import consulo.project.Project;
+import consulo.project.ui.wm.ToolWindowManager;
 import consulo.ui.annotation.RequiredUIAccess;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.ui.ex.awt.Messages;
+import consulo.ui.ex.content.Content;
+import consulo.ui.ex.content.ContentManager;
+import consulo.ui.ex.toolWindow.ToolWindow;
 import consulo.util.lang.StringUtil;
+import consulo.virtualFileSystem.VirtualFile;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -28,6 +34,8 @@ import java.util.stream.Collectors;
  * @author traff
  */
 @Singleton
+@ServiceAPI(ComponentScope.PROJECT)
+@ServiceImpl
 public class TerminalView
 {
 	private final Project myProject;
@@ -42,7 +50,7 @@ public class TerminalView
 
 	public static TerminalView getInstance(@Nonnull Project project)
 	{
-		return project.getComponent(TerminalView.class);
+		return project.getInstance(TerminalView.class);
 	}
 
 	@RequiredUIAccess
@@ -60,11 +68,11 @@ public class TerminalView
 		myDoAddNewSessionOnInit = true;
 
 		addNewSession(toolWindow, workDirectory);
-		
+
 		toolWindow.activate(null);
 	}
 
-	public void initTerminal(final ToolWindowEx toolWindow)
+	public void initTerminal(final ToolWindow toolWindow)
 	{
 		toolWindow.setToHideOnEmptyContent(true);
 
@@ -100,28 +108,45 @@ public class TerminalView
 
 	public void addNewSession(@Nonnull ToolWindow toolWindow, @Nullable String workDirectory)
 	{
-		LocalTerminalDirectRunner terminalRunner = new LocalTerminalDirectRunner(myProject);
-
 		ContentManager contentManager = toolWindow.getContentManager();
 
 		Disposable parentDisposable = Disposable.newDisposable("terminal view");
 
-		JBTerminalSystemSettingsProvider provider = new JBTerminalSystemSettingsProvider(myProject.getApplication(), parentDisposable);
+		TerminalSessionFactory sessionFactory = myProject.getApplication().getInstance(TerminalSessionFactory.class);
 
-		JBTerminalWidget widget = new JBTerminalWidget(provider);
-		Disposer.register(parentDisposable, widget);
+		if(workDirectory == null)
+		{
+			workDirectory = currentProjectFolder(myProject);
+		}
 
-		terminalRunner.openSessionInDirectory(widget, workDirectory);
+		TerminalSession session = sessionFactory.createLocal("Local", workDirectory, () -> TerminalOptionsProvider.getInstance().getShellPathOrDefault());
+
+		TerminalConsoleFactory terminalConsoleFactory = myProject.getInstance(TerminalConsoleFactory.class);
+
+		TerminalConsole terminalConsole = terminalConsoleFactory.create(session, TerminalOptionsProvider.getInstance(), parentDisposable);
 
 		List<String> names = Arrays.stream(contentManager.getContents()).map(Content::getDisplayName).collect(Collectors.toList());
-		String uniqueName = UniqueNameGenerator.generateUniqueName(widget.getSessionName(), "", "", " ", "", name -> !names.contains(name));
+		String uniqueName = UniqueNameGenerator.generateUniqueName(terminalConsole.getSessionName(), "", "", " ", "", name -> !names.contains(name));
 
-		Content content = contentManager.getFactory().createContent(widget, uniqueName, false);
+		Content content = contentManager.getFactory().createUIContent(terminalConsole.getUIComponent(), uniqueName, false);
 		content.setCloseable(true);
 		content.setTabName(uniqueName);
 		content.setDisposer(parentDisposable);
 
 		contentManager.addContent(content);
 		contentManager.setSelectedContent(content);
+	}
+
+	@Nonnull
+	private static String currentProjectFolder(Project project)
+	{
+		final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(project);
+
+		final VirtualFile[] roots = projectRootManager.getContentRoots();
+		if(roots.length == 1)
+		{
+			roots[0].getCanonicalPath();
+		}
+		return project.getBasePath();
 	}
 }

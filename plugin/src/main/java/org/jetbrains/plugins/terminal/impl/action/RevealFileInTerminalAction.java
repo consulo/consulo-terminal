@@ -1,17 +1,22 @@
 // Copyright 2000-2019 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
-package org.jetbrains.plugins.terminal.action;
+package org.jetbrains.plugins.terminal.impl.action;
 
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.DumbAwareAction;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
+import consulo.annotation.component.ActionImpl;
+import consulo.annotation.component.ActionParentRef;
+import consulo.annotation.component.ActionRef;
+import consulo.codeEditor.Editor;
+import consulo.language.editor.CommonDataKeys;
+import consulo.project.Project;
+import consulo.terminal.icon.TerminalIconGroup;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.vfs.ArchiveFileSystem;
-import org.jetbrains.plugins.terminal.TerminalView;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.DumbAwareAction;
+import consulo.ui.image.Image;
+import consulo.virtualFileSystem.VirtualFile;
+import consulo.virtualFileSystem.VirtualFileSystem;
+import consulo.virtualFileSystem.archive.ArchiveFileSystem;
+import org.jetbrains.plugins.terminal.impl.TerminalView;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,6 +24,7 @@ import javax.annotation.Nullable;
 /**
  * An action that activates the terminal window for file, selected by user.
  */
+@ActionImpl(id = "Terminal.OpenInTerminal", parents = @ActionParentRef(@ActionRef(id = "RevealGroup")))
 public class RevealFileInTerminalAction extends DumbAwareAction
 {
 	public RevealFileInTerminalAction()
@@ -33,9 +39,16 @@ public class RevealFileInTerminalAction extends DumbAwareAction
 		e.getPresentation().setEnabledAndVisible(isAvailable(e));
 	}
 
+	@Nullable
+	@Override
+	protected Image getTemplateIcon()
+	{
+		return TerminalIconGroup.openterminal_13x13();
+	}
+
 	private static boolean isAvailable(@Nonnull AnActionEvent e)
 	{
-		Project project = e.getProject();
+		Project project = e.getData(Project.KEY);
 		Editor editor = e.getData(CommonDataKeys.EDITOR);
 		return project != null && getSelectedFile(e) != null &&
 				(!ActionPlaces.isPopupPlace(e.getPlace()) || editor == null || !editor.getSelectionModel().hasSelection());
@@ -51,7 +64,7 @@ public class RevealFileInTerminalAction extends DumbAwareAction
 	@Override
 	public void actionPerformed(@Nonnull AnActionEvent e)
 	{
-		Project project = e.getProject();
+		Project project = e.getData(Project.KEY);
 		VirtualFile selectedFile = getSelectedFile(e);
 		if(project == null || selectedFile == null)
 		{
