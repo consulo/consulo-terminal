@@ -8,10 +8,9 @@ import consulo.codeEditor.Editor;
 import consulo.language.editor.CommonDataKeys;
 import consulo.project.Project;
 import consulo.terminal.icon.TerminalIconGroup;
+import consulo.terminal.localize.TerminalLocalize;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.action.ActionPlaces;
-import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.DumbAwareAction;
+import consulo.ui.ex.action.*;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileSystem;
@@ -27,16 +26,26 @@ import javax.annotation.Nullable;
 @ActionImpl(id = "Terminal.OpenInTerminal", parents = @ActionParentRef(@ActionRef(id = "RevealGroup")))
 public class RevealFileInTerminalAction extends DumbAwareAction
 {
-	public RevealFileInTerminalAction()
-	{
-		super("Open in Terminal", "Open current file location in terminal", null);
-	}
-
 	@RequiredUIAccess
 	@Override
 	public void update(@Nonnull AnActionEvent e)
 	{
-		e.getPresentation().setEnabledAndVisible(isAvailable(e));
+		Project project = e.getData(Project.KEY);
+		Editor editor = e.getData(Editor.KEY);
+		String place = e.getPlace();
+
+		Presentation presentation = e.getPresentation();
+		if("ProjectViewPopup".equals(place))
+		{
+			presentation.setTextValue(TerminalLocalize.actionTerminalOpeninterminalShortText());
+		}
+		else
+		{
+			presentation.setTextValue(TerminalLocalize.actionTerminalOpeninterminalText());
+		}
+
+		presentation.setEnabledAndVisible(project != null && getSelectedFile(e) != null &&
+				(!ActionPlaces.isPopupPlace(place) || editor == null || !editor.getSelectionModel().hasSelection()));
 	}
 
 	@Nullable
@@ -44,14 +53,6 @@ public class RevealFileInTerminalAction extends DumbAwareAction
 	protected Image getTemplateIcon()
 	{
 		return TerminalIconGroup.openterminal_13x13();
-	}
-
-	private static boolean isAvailable(@Nonnull AnActionEvent e)
-	{
-		Project project = e.getData(Project.KEY);
-		Editor editor = e.getData(CommonDataKeys.EDITOR);
-		return project != null && getSelectedFile(e) != null &&
-				(!ActionPlaces.isPopupPlace(e.getPlace()) || editor == null || !editor.getSelectionModel().hasSelection());
 	}
 
 	@Nullable

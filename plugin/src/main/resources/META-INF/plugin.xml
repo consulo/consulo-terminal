@@ -4,6 +4,7 @@
 	<version>SNAPSHOT</version>
 	<vendor>JetBrains</vendor>
 	<description>Embedded Terminal</description>
+	<localize>consulo.terminal.TerminalLocalize</localize>
 
 	<tags>
 		<tag>tools</tag>
