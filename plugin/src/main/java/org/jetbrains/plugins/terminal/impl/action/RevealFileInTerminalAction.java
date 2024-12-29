@@ -17,8 +17,8 @@ import consulo.virtualFileSystem.VirtualFileSystem;
 import consulo.virtualFileSystem.archive.ArchiveFileSystem;
 import org.jetbrains.plugins.terminal.impl.TerminalView;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 
 /**
  * An action that activates the terminal window for file, selected by user.
