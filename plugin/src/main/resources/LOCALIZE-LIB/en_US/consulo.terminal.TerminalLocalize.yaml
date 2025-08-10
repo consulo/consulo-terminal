@@ -1,6 +1,8 @@
-action.Terminal.OpenInTerminal.text:
-  text: Open in Terminal
 action.Terminal.OpenInTerminal.description:
-  text: Open current file location in terminal
+    text: Open current file location in terminal
 action.Terminal.OpenInTerminal.short.text:
-  text: Terminal
+    text: Terminal
+action.Terminal.OpenInTerminal.text:
+    text: Open in Terminal
+configurable.name:
+    text: Terminal

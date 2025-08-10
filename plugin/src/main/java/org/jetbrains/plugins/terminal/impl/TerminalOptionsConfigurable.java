@@ -23,6 +23,7 @@ import consulo.disposer.Disposable;
 import consulo.fileChooser.FileChooserDescriptorFactory;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
+import consulo.terminal.localize.TerminalLocalize;
 import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.TextBox;
@@ -125,8 +126,8 @@ public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties 
 
 	@Nonnull
 	@Override
-	public String getDisplayName()
+	public LocalizeValue getDisplayName()
 	{
-		return "Terminal";
+		return TerminalLocalize.configurableName();
 	}
 }
