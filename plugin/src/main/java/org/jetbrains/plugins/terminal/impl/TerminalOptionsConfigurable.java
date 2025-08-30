@@ -21,6 +21,7 @@ import consulo.configurable.SimpleConfigurableByProperties;
 import consulo.configurable.StandardConfigurableIds;
 import consulo.disposer.Disposable;
 import consulo.fileChooser.FileChooserDescriptorFactory;
+import consulo.fileChooser.FileChooserTextBoxBuilder;
 import consulo.localize.LocalizeValue;
 import consulo.project.Project;
 import consulo.terminal.localize.TerminalLocalize;
@@ -28,13 +29,11 @@ import consulo.ui.CheckBox;
 import consulo.ui.Component;
 import consulo.ui.TextBox;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.FileChooserTextBoxBuilder;
 import consulo.ui.util.FormBuilder;
-import jakarta.inject.Inject;
-import jakarta.inject.Provider;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 
 /**
  * @author traff
