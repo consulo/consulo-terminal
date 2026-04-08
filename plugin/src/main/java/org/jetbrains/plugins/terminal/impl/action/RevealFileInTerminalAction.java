@@ -37,11 +37,11 @@ public class RevealFileInTerminalAction extends DumbAwareAction
 		Presentation presentation = e.getPresentation();
 		if("ProjectViewPopup".equals(place))
 		{
-			presentation.setTextValue(TerminalLocalize.actionTerminalOpeninterminalShortText());
+			presentation.setText(TerminalLocalize.actionTerminalOpeninterminalShortText());
 		}
 		else
 		{
-			presentation.setTextValue(TerminalLocalize.actionTerminalOpeninterminalText());
+			presentation.setText(TerminalLocalize.actionTerminalOpeninterminalText());
 		}
 
 		presentation.setEnabledAndVisible(project != null && getSelectedFile(e) != null &&
