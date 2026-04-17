@@ -24,7 +24,7 @@ import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
 import consulo.execution.ui.terminal.TerminalConsoleSettings;
-import consulo.ide.ServiceManager;
+import consulo.application.Application;
 import consulo.localize.LocalizeValue;
 import consulo.platform.Platform;
 import consulo.util.lang.StringUtil;
@@ -48,7 +48,7 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 
 	public static TerminalOptionsProvider getInstance()
 	{
-		return ServiceManager.getService(TerminalOptionsProvider.class);
+		return Application.get().getInstance(TerminalOptionsProvider.class);
 	}
 
 	@Override
