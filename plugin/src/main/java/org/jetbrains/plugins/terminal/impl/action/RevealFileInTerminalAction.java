@@ -4,6 +4,7 @@ package org.jetbrains.plugins.terminal.impl.action;
 import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
+import consulo.application.dumb.DumbAware;
 import consulo.codeEditor.Editor;
 import consulo.codeEditor.EditorKeys;
 import consulo.language.editor.CommonDataKeys;
@@ -11,10 +12,7 @@ import consulo.project.Project;
 import consulo.terminal.icon.TerminalIconGroup;
 import consulo.terminal.localize.TerminalLocalize;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.action.ActionPlaces;
-import consulo.ui.ex.action.AnActionEvent;
-import consulo.ui.ex.action.LegacyDumbAwareAction;
-import consulo.ui.ex.action.Presentation;
+import consulo.ui.ex.action.*;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileSystem;
@@ -27,9 +25,13 @@ import org.jetbrains.plugins.terminal.impl.TerminalView;
  * An action that activates the terminal window for file, selected by user.
  */
 @ActionImpl(id = "Terminal.OpenInTerminal", parents = @ActionParentRef(@ActionRef(id = "RevealGroup")))
-public class RevealFileInTerminalAction extends LegacyDumbAwareAction
+public class RevealFileInTerminalAction extends AnAction implements DumbAware, AnActionWithSyncUpdate
 {
-	@RequiredUIAccess
+	public RevealFileInTerminalAction()
+	{
+		super(TerminalLocalize.actionTerminalOpeninterminalText(), TerminalLocalize.actionTerminalOpeninterminalText(), TerminalIconGroup.openterminal_13x13());
+	}
+
 	@Override
 	public void update(@Nonnull AnActionEvent e)
 	{
@@ -51,12 +53,6 @@ public class RevealFileInTerminalAction extends LegacyDumbAwareAction
 				(!ActionPlaces.isPopupPlace(place) || editor == null || !editor.getSelectionModel().hasSelection()));
 	}
 
-	@Nullable
-	@Override
-	protected Image getTemplateIcon()
-	{
-		return TerminalIconGroup.openterminal_13x13();
-	}
 
 	@Nullable
 	private static VirtualFile getSelectedFile(@Nonnull AnActionEvent e)
