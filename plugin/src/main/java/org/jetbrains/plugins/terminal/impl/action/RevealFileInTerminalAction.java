@@ -5,33 +5,36 @@ import consulo.annotation.component.ActionImpl;
 import consulo.annotation.component.ActionParentRef;
 import consulo.annotation.component.ActionRef;
 import consulo.codeEditor.Editor;
+import consulo.codeEditor.EditorKeys;
 import consulo.language.editor.CommonDataKeys;
 import consulo.project.Project;
 import consulo.terminal.icon.TerminalIconGroup;
 import consulo.terminal.localize.TerminalLocalize;
 import consulo.ui.annotation.RequiredUIAccess;
-import consulo.ui.ex.action.*;
+import consulo.ui.ex.action.ActionPlaces;
+import consulo.ui.ex.action.AnActionEvent;
+import consulo.ui.ex.action.LegacyDumbAwareAction;
+import consulo.ui.ex.action.Presentation;
 import consulo.ui.image.Image;
 import consulo.virtualFileSystem.VirtualFile;
 import consulo.virtualFileSystem.VirtualFileSystem;
 import consulo.virtualFileSystem.archive.ArchiveFileSystem;
-import org.jetbrains.plugins.terminal.impl.TerminalView;
-
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import org.jetbrains.plugins.terminal.impl.TerminalView;
 
 /**
  * An action that activates the terminal window for file, selected by user.
  */
 @ActionImpl(id = "Terminal.OpenInTerminal", parents = @ActionParentRef(@ActionRef(id = "RevealGroup")))
-public class RevealFileInTerminalAction extends DumbAwareAction
+public class RevealFileInTerminalAction extends LegacyDumbAwareAction
 {
 	@RequiredUIAccess
 	@Override
 	public void update(@Nonnull AnActionEvent e)
 	{
 		Project project = e.getData(Project.KEY);
-		Editor editor = e.getData(Editor.KEY);
+		Editor editor = e.getData(EditorKeys.EDITOR_SNAPSHOT);
 		String place = e.getPlace();
 
 		Presentation presentation = e.getPresentation();
