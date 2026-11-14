@@ -3,12 +3,16 @@
  * @since 07/04/2023
  */
 module org.jetbrains.plugins.terminal {
+    requires transitive org.jetbrains.plugins.terminal.api;
+
     requires consulo.application.api;
     requires consulo.code.editor.api;
     requires consulo.component.api;
     requires consulo.configurable.api;
     requires consulo.disposer.api;
     requires consulo.execution.api;
+    requires consulo.logging.api;
+    requires jediterm.core;
     requires consulo.file.chooser.api;
     requires consulo.language.editor.api;
     requires consulo.localize.api;

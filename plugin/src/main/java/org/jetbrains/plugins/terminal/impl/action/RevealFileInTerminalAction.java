@@ -57,7 +57,7 @@ public class RevealFileInTerminalAction extends AnAction implements DumbAware, A
 	@Nullable
 	private static VirtualFile getSelectedFile(@Nonnull AnActionEvent e)
 	{
-		return findLocalFile(e.getData(CommonDataKeys.VIRTUAL_FILE));
+		return findFileWithPath(e.getData(CommonDataKeys.VIRTUAL_FILE));
 	}
 
 	@RequiredUIAccess
@@ -74,7 +74,7 @@ public class RevealFileInTerminalAction extends AnAction implements DumbAware, A
 	}
 
 	@Nullable
-	public static VirtualFile findLocalFile(@Nullable VirtualFile file)
+	public static VirtualFile findFileWithPath(@Nullable VirtualFile file)
 	{
 		if(file == null || file.isInLocalFileSystem())
 		{
@@ -87,6 +87,6 @@ public class RevealFileInTerminalAction extends AnAction implements DumbAware, A
 			return ((ArchiveFileSystem) fs).getLocalVirtualFileFor(file);
 		}
 
-		return null;
+		return fs.getNioPath(file) != null ? file : null;
 	}
 }

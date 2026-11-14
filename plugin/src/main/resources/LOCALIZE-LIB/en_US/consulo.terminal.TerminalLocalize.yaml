@@ -4,5 +4,15 @@ action.Terminal.OpenInTerminal.short.text:
     text: Terminal
 action.Terminal.OpenInTerminal.text:
     text: Open in Terminal
+action.terminal.new.predefined.session.text:
+    text: New Predefined Session
+code.block.runner.title:
+    text: Run in Terminal
 configurable.name:
     text: Terminal
+shell.path.default.placeholder:
+    text: Default shell of {0}
+target.of.project:
+    text: '{0} (project)'
+terminal.start.error:
+    text: 'Cannot start the terminal on {0}: {1}'

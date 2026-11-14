@@ -18,22 +18,21 @@ package org.jetbrains.plugins.terminal.impl;
 import consulo.annotation.component.ComponentScope;
 import consulo.annotation.component.ServiceAPI;
 import consulo.annotation.component.ServiceImpl;
-import consulo.application.util.SystemInfo;
 import consulo.component.persist.PersistentStateComponent;
 import consulo.component.persist.State;
 import consulo.component.persist.Storage;
 import consulo.component.persist.StoragePathMacros;
+import consulo.execution.terminal.TerminalSessionFactory;
 import consulo.execution.ui.terminal.TerminalConsoleSettings;
 import consulo.application.Application;
 import consulo.localize.LocalizeValue;
 import consulo.platform.Platform;
 import consulo.util.lang.StringUtil;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
-import java.io.File;
-import java.util.Objects;
 
 /**
  * @author traff
@@ -44,7 +43,15 @@ import java.util.Objects;
 @ServiceImpl
 public class TerminalOptionsProvider implements PersistentStateComponent<TerminalOptionsProvider.State>, TerminalConsoleSettings
 {
+	private final TerminalSessionFactory mySessionFactory;
+
 	private State myState = new State();
+
+	@Inject
+	public TerminalOptionsProvider(TerminalSessionFactory sessionFactory)
+	{
+		mySessionFactory = sessionFactory;
+	}
 
 	public static TerminalOptionsProvider getInstance()
 	{
@@ -142,42 +149,9 @@ public class TerminalOptionsProvider implements PersistentStateComponent<Termina
 	}
 
 	@Nonnull
-	public String getShellPathOrDefault()
-	{
-		String defaultShellPath = getDefaultShellPath();
-
-		if(Objects.equals(getShellPath(), defaultShellPath))
-		{
-			// reset shell path if is default
-			setShellPath(null);
-		}
-
-		String shellPath = getShellPath();
-		if(StringUtil.isEmptyOrSpaces(shellPath))
-		{
-			return getDefaultShellPath();
-		}
-		return shellPath;
-	}
-
-	@Nonnull
 	public String getDefaultShellPath()
 	{
-		String shell = Platform.current().os().getEnvironmentVariable("SHELL");
-
-		if(shell != null && new File(shell).canExecute())
-		{
-			return shell;
-		}
-
-		if(SystemInfo.isUnix)
-		{
-			return "/bin/bash";
-		}
-		else
-		{
-			return "cmd.exe";
-		}
+		return mySessionFactory.findDefaultShellPath(Platform.current());
 	}
 
 	public void setShellPath(String shellPath)

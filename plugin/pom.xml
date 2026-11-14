@@ -75,9 +75,19 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>org.jetbrains.plugins.terminal.api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>consulo</groupId>
 			<artifactId>consulo-application-api</artifactId>
 			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>consulo.internal</groupId>
+			<artifactId>jediterm-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

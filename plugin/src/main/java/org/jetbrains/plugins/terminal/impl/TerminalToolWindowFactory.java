@@ -68,10 +68,9 @@ public class TerminalToolWindowFactory implements ToolWindowFactory, DumbAware
 			@Override
 			public void stateChanged(ToolWindowManager manager)
 			{
-				boolean visible = toolWindow.isVisible();
-				if(visible && toolWindow.getContentManager().getContentCount() == 0)
+				if(toolWindow.isVisible())
 				{
-					terminalView.addNewSession(toolWindow, null);
+					terminalView.addNewSessionIfEmpty(toolWindow);
 				}
 			}
 		});

@@ -58,18 +58,29 @@ public class TerminalOptionsConfigurable extends SimpleConfigurableByProperties 
 	{
 		FormBuilder builder = FormBuilder.create();
 
+		boolean remoteProject = myProject.getPlatformTargetId() != null;
+
 		FileChooserTextBoxBuilder shellPathBuilder = FileChooserTextBoxBuilder.create(myProject);
 		shellPathBuilder.dialogTitle(LocalizeValue.localizeTODO("Select Shell"));
-		shellPathBuilder.fileChooserDescriptor(FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
+		shellPathBuilder.fileChooserDescriptor(FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor().withPlatform(myProject.getPlatform()));
 
 		FileChooserTextBoxBuilder.Controller shellController = shellPathBuilder.build();
 
 		TerminalOptionsProvider terminalOptionsProvider = myOptionsProvider.get();
 
 		TextBox shellPathBox = shellController.getComponent();
-		shellPathBox.withPlaceholder(terminalOptionsProvider.getDefaultShellPath());
 		builder.addLabeled(LocalizeValue.localizeTODO("Shell path:"), shellPathBox);
-		propertyBuilder.add(shellController::getValue, shellController::setValue, terminalOptionsProvider::getShellPath, terminalOptionsProvider::setShellPath);
+		if(remoteProject)
+		{
+			TerminalProjectOptionsProvider projectOptionsProvider = TerminalProjectOptionsProvider.getInstance(myProject);
+			shellPathBox.withPlaceholder(TerminalLocalize.shellPathDefaultPlaceholder(myProject.getPlatform().getName()));
+			propertyBuilder.add(shellController::getValue, shellController::setValue, projectOptionsProvider::getShellPath, projectOptionsProvider::setShellPath);
+		}
+		else
+		{
+			shellPathBox.withPlaceholder(terminalOptionsProvider.getDefaultShellPath());
+			propertyBuilder.add(shellController::getValue, shellController::setValue, terminalOptionsProvider::getShellPath, terminalOptionsProvider::setShellPath);
+		}
 
 		TextBox tabNameBox = TextBox.create();
 		tabNameBox.withPlaceholder(terminalOptionsProvider.getDefaultTabName().getValue());
